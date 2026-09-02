@@ -4,7 +4,7 @@
  * Plugin URI:        https://github.com/kekeradish/radish-webp-optimizer
  * Description:       Automatically optimize original JPG/PNG images and convert them into lightweight WebP format. Features visual lossless compression, large batch modal workbench, image lightbox preview, and safe backup.
  * Version:           1.1.1
- * Author:            求知的萝卜 (Radish Team)
+ * Author:            求知的萝卜
  * Author URI:        https://mp.weixin.qq.com
  * License:           GPL-2.0+
  * Text Domain:       webp-radish-webp-optimizer

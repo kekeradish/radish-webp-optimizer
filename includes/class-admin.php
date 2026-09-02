@@ -303,7 +303,7 @@ class Radish_WebP_Admin {
         ?>
         <div class="wrap visil-webp-wrap">
             <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
-            <p class="visil-subtitle"><?php echo esc_html__('Crafted by Radish Team (求知的萝卜): Dual-stage optimization architecture for massive server storage savings and lightning-fast WebP loading.', 'webp-radish-webp-optimizer'); ?></p>
+            <p class="visil-subtitle"><?php echo esc_html__('由 求知的萝卜 倾力打造： Dual-stage optimization architecture for massive server storage savings and lightning-fast WebP loading.', 'webp-radish-webp-optimizer'); ?></p>
 
             <!-- 服务器环境状态卡片 -->
             <div class="visil-card visil-health-card">
