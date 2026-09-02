@@ -5,7 +5,7 @@
  * Description:       Automatically optimize original JPG/PNG images and convert them into lightweight WebP format. Features visual lossless compression, large batch modal workbench, image lightbox preview, and safe backup.
  * Version:           1.1.1
  * Requires at least: 5.6
- * Requires PHP:      7.4
+ * Requires PHP:      7.0
  * Author:            求知的萝卜
  * Author URI:        https://mp.weixin.qq.com
  * License:           GPL-2.0+
