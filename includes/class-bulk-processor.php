@@ -37,13 +37,16 @@ class Radish_WebP_Bulk_Processor {
         $upload_dir = wp_upload_dir();
         $items = array();
 
+        $base_url_root = $upload_dir['baseurl'];
+        $base_dir_root = $upload_dir['basedir'];
+
         foreach ($attachments as $post) {
             $meta = wp_get_attachment_metadata($post->ID);
             if (empty($meta) || empty($meta['file'])) {
                 continue;
             }
 
-            $orig_path = path_join($upload_dir['basedir'], $meta['file']);
+            $orig_path = path_join($base_dir_root, $meta['file']);
             if (!file_exists($orig_path)) {
                 continue;
             }
@@ -58,10 +61,16 @@ class Radish_WebP_Bulk_Processor {
             }
 
             $webp_size = $has_webp ? filesize($webp_path) : 0;
-            $thumb_src = wp_get_attachment_image_src($post->ID, 'thumbnail');
-            $full_src  = wp_get_attachment_image_src($post->ID, 'large');
-            if (empty($full_src)) {
-                $full_src = wp_get_attachment_image_src($post->ID, 'full');
+            
+            $file_dir = dirname($meta['file']);
+            $file_dir_url = ($file_dir === '.' || empty($file_dir)) ? $base_url_root : $base_url_root . '/' . $file_dir;
+            $full_img_url = $base_url_root . '/' . $meta['file'];
+            $thumb_url = $full_img_url;
+
+            if (!empty($meta['sizes']['thumbnail']['file'])) {
+                $thumb_url = $file_dir_url . '/' . $meta['sizes']['thumbnail']['file'];
+            } elseif (!empty($meta['sizes']['medium']['file'])) {
+                $thumb_url = $file_dir_url . '/' . $meta['sizes']['medium']['file'];
             }
 
             $orig_saved_pct = 0;
@@ -72,8 +81,8 @@ class Radish_WebP_Bulk_Processor {
             $items[] = array(
                 'id'                 => $post->ID,
                 'title'              => basename($meta['file']),
-                'thumb'              => !empty($thumb_src[0]) ? $thumb_src[0] : '',
-                'full_img'           => !empty($full_src[0]) ? $full_src[0] : '',
+                'thumb'              => $thumb_url,
+                'full_img'           => $full_img_url,
                 'initial_size_str'   => size_format($initial_size, 1),
                 'current_orig_str'   => size_format($current_orig_size, 1),
                 'orig_saved_pct'     => $orig_saved_pct,

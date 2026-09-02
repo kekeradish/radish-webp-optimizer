@@ -33,14 +33,24 @@ jQuery(document).ready(function ($) {
     var $lightbox = $('#radish-lightbox-modal');
     var $lightboxImg = $('#radish-lightbox-img');
     // -------------------------------------------------------------
-    // 0. Global Fallback Open Function
+    // 0. Global Fallback Open / Close Functions
     // -------------------------------------------------------------
-    window.radishOpenModalDirect = function () {
+    window.radishOpenModalDirect = function (e) {
+        if (e) e.preventDefault();
         $('#radish-bulk-modal').css('display', 'flex').addClass('active');
         $('body').css('overflow', 'hidden');
         if (scannedItems.length === 0) {
             triggerScan();
         }
+    };
+
+    window.radishCloseModalDirect = function (e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        $('#radish-bulk-modal').css('display', 'none').removeClass('active');
+        $('body').css('overflow', '');
     };
 
     // -------------------------------------------------------------
@@ -55,35 +65,32 @@ jQuery(document).ready(function ($) {
     // -------------------------------------------------------------
     $(document).on('click', '#btn-open-modal, .btn-open-modal', function (e) {
         e.preventDefault();
-        window.radishOpenModalDirect();
+        window.radishOpenModalDirect(e);
     });
 
-    $(document).on('click', '#btn-close-modal', function (e) {
+    $(document).on('click', '#btn-close-modal, #btn-close-modal-footer', function (e) {
         e.preventDefault();
-        closeModal();
+        window.radishCloseModalDirect(e);
     });
 
     $(document).on('keydown', function (e) {
         if (e.key === 'Escape') {
-            if ($lightbox.hasClass('active')) {
+            if ($lightbox.hasClass('active') || $lightbox.is(':visible')) {
                 closeLightbox();
-            } else if ($modal.hasClass('active')) {
-                closeModal();
+            } else if ($modal.hasClass('active') || $modal.is(':visible')) {
+                window.radishCloseModalDirect(e);
             }
         }
     });
 
     $modal.on('click', function (e) {
         if ($(e.target).hasClass('visil-modal-overlay')) {
-            closeModal();
+            window.radishCloseModalDirect(e);
         }
     });
 
     function closeModal() {
-        $modal.fadeOut(150, function () {
-            $(this).removeClass('active');
-        });
-        $('body').css('overflow', '');
+        window.radishCloseModalDirect();
     }
 
     $btnRescan.on('click', function () {
@@ -101,7 +108,7 @@ jQuery(document).ready(function ($) {
         if (fullUrl) {
             $lightboxImg.attr('src', fullUrl).show();
             $lightboxCaption.text(title);
-            $lightbox.css('display', 'flex').hide().fadeIn(200).addClass('active');
+            $lightbox.css('display', 'flex').addClass('active');
         }
     });
 
@@ -117,10 +124,8 @@ jQuery(document).ready(function ($) {
     });
 
     function closeLightbox() {
-        $lightbox.fadeOut(150, function () {
-            $(this).removeClass('active');
-            $lightboxImg.hide().attr('src', '');
-        });
+        $lightbox.css('display', 'none').removeClass('active');
+        $lightboxImg.hide().attr('src', '');
     }
 
     // -------------------------------------------------------------
@@ -139,12 +144,12 @@ jQuery(document).ready(function ($) {
             $loadingState.hide();
             $table.show();
 
-            if (res.success && res.data.items) {
+            if (res.success && res.data && res.data.items) {
                 scannedItems = res.data.items;
-                $totalCount.text(res.data.total);
+                $totalCount.text(res.data.total || scannedItems.length);
                 renderTable(scannedItems);
             } else {
-                alert(res.data.message || s.scanFailed || 'Scan failed');
+                alert((res.data && res.data.message) || s.scanFailed || 'Scan failed');
             }
         }).fail(function () {
             $loadingState.hide();
@@ -155,7 +160,7 @@ jQuery(document).ready(function ($) {
 
     function renderTable(items) {
         $tbody.empty();
-        if (items.length === 0) {
+        if (!items || items.length === 0) {
             var noImagesText = s.noImages || 'No JPG/PNG images found';
             $tbody.html('<tr><td colspan="6" style="text-align:center; padding:40px; color:#a7aaad; font-size:15px;">' + noImagesText + '</td></tr>');
             updateSelectedCount();
@@ -167,39 +172,40 @@ jQuery(document).ready(function ($) {
         var hoverText = s.previewHover || '🔍 Click to view large image preview';
         var datePrefix = s.uploadDate || 'Upload date:';
 
+        var rowsHtml = '';
+
         items.forEach(function (item) {
             var badgeHtml = item.has_webp 
                 ? '<span class="badge badge-success" style="font-size:11px;">' + genBadge + '</span>' 
                 : '<span class="badge badge-danger" style="font-size:11px;">' + notGenBadge + '</span>';
 
             var origHtml = '';
-            if (item.orig_saved_pct > 0) {
-                origHtml = '<del style="color:#94a3b8; font-size:12px;">' + item.initial_size_str + '</del> → <strong style="color:#2563eb;">' + item.current_orig_str + '</strong> <span style="color:#2563eb; font-weight:700; font-size:11px;">(-' + item.orig_saved_pct + '%)</span>';
+            if (item.orig_saved_pct && item.orig_saved_pct > 0) {
+                origHtml = '<del style="color:#94a3b8; font-size:12px;">' + (item.initial_size_str || '') + '</del> → <strong style="color:#2563eb;">' + (item.current_orig_str || '') + '</strong> <span style="color:#2563eb; font-weight:700; font-size:11px;">(-' + item.orig_saved_pct + '%)</span>';
             } else {
-                origHtml = '<strong>' + item.current_orig_str + '</strong>';
+                origHtml = '<strong>' + (item.current_orig_str || item.initial_size_str || '—') + '</strong>';
             }
 
             var webpHtml = item.has_webp && item.webp_size 
                 ? '<strong style="color:#008a20; font-weight:700;">' + item.webp_size + '</strong>' 
                 : '<span style="color:#a7aaad;">—</span>';
 
-            var previewUrl = item.full_img || item.thumb;
+            var previewUrl = item.full_img || item.thumb || '';
             var thumbImg = item.thumb 
-                ? '<img src="' + item.thumb + '" data-full-url="' + previewUrl + '" data-title="' + item.title + '" class="visil-thumb-img" title="' + hoverText + '">' 
+                ? '<img src="' + item.thumb + '" data-full-url="' + previewUrl + '" data-title="' + (item.title || '') + '" class="visil-thumb-img" title="' + hoverText + '">' 
                 : '<span style="font-size:24px;">🖼️</span>';
 
-            var tr = '<tr id="scan-row-' + item.id + '" class="row-selected" data-has-webp="' + (item.has_webp ? '1' : '0') + '">' +
+            rowsHtml += '<tr id="scan-row-' + item.id + '" class="row-selected" data-has-webp="' + (item.has_webp ? '1' : '0') + '">' +
                 '<td style="text-align:center;"><input type="checkbox" class="media-check-item" value="' + item.id + '" checked></td>' +
                 '<td style="text-align:center;">' + thumbImg + '</td>' +
-                '<td><strong style="color:#1d2327; font-size:13px; line-height:1.4;">' + item.title + '</strong><br><small style="color:#8c8f94;">' + datePrefix + ' ' + item.date + ' (ID: ' + item.id + ')</small></td>' +
+                '<td><strong style="color:#1d2327; font-size:13px; line-height:1.4;">' + (item.title || '') + '</strong><br><small style="color:#8c8f94;">' + datePrefix + ' ' + (item.date || '') + ' (ID: ' + item.id + ')</small></td>' +
                 '<td id="orig-size-' + item.id + '">' + origHtml + '</td>' +
                 '<td id="webp-size-' + item.id + '">' + webpHtml + '</td>' +
                 '<td id="status-cell-' + item.id + '" style="text-align:center;">' + badgeHtml + '</td>' +
             '</tr>';
-
-            $tbody.append(tr);
         });
 
+        $tbody.html(rowsHtml);
         updateSelectedCount();
     }
 

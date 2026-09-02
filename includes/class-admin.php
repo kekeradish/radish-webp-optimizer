@@ -521,7 +521,7 @@ class Radish_WebP_Admin {
             <div class="visil-modal-container">
                 <div class="visil-modal-header">
                     <h2>🚀 <?php echo radish_esc_html_t('Bulk Optimization Workbench'); ?></h2>
-                    <button id="btn-close-modal" type="button" class="visil-modal-close" title="<?php echo esc_attr(radish_t('Close (ESC)')); ?>">&times;</button>
+                    <button id="btn-close-modal" type="button" class="visil-modal-close" onclick="if(window.radishCloseModalDirect){window.radishCloseModalDirect(event);}else{var m=document.getElementById('radish-bulk-modal');if(m){m.style.display='none';m.classList.remove('active');document.body.style.overflow='';}}" title="<?php echo esc_attr(radish_t('Close (ESC)')); ?>">&times;</button>
                 </div>
 
                 <div class="visil-modal-toolbar">
@@ -590,7 +590,7 @@ class Radish_WebP_Admin {
                         <button id="btn-start-bulk" type="button" class="button button-primary" style="font-weight:700; height:38px; line-height:36px; padding:0 24px !important; border-radius:8px; white-space:nowrap;">
                             ⚡ <?php echo radish_esc_html_t('Start Bulk Optimization'); ?> (<span id="btn-selected-count">0</span>)
                         </button>
-                        <button id="btn-close-modal-footer" type="button" class="button" style="height:38px; line-height:36px; border-radius:8px;">
+                        <button id="btn-close-modal-footer" type="button" class="button" onclick="if(window.radishCloseModalDirect){window.radishCloseModalDirect(event);}else{var m=document.getElementById('radish-bulk-modal');if(m){m.style.display='none';m.classList.remove('active');document.body.style.overflow='';}}" style="height:38px; line-height:36px; border-radius:8px;">
                             <?php echo radish_esc_html_t('Close (ESC)'); ?>
                         </button>
                     </div>
