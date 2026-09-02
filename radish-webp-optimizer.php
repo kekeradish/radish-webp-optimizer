@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:       萝卜 WebP 大师 (Radish WebP Optimizer)
- * Plugin URI:        https://mp.weixin.qq.com/s/求知的萝卜
+ * Plugin URI:        https://github.com/kekeradish/radish-webp-optimizer
  * Description:       【求知的萝卜】出品。自动将上传的 JPG/PNG 进行原图自身瘦身，并生成极致轻量的高质量 WebP 格式。支持前端 Picture 标签降级、大窗口批量勾选优化与原始图安全备份。
  * Version:           1.1.0
  * Author:            求知的萝卜

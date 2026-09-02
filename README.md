@@ -45,7 +45,7 @@
 将本项目克隆至 WordPress 的 `wp-content/plugins/` 目录：
 ```bash
 cd wp-content/plugins/
-git clone https://github.com/你的GitHub用户名/radish-webp-optimizer.git
+git clone https://github.com/kekeradish/radish-webp-optimizer.git
 ```
 进入 WordPress 后台在【已安装的插件】中点击启用。
 
