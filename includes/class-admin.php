@@ -34,7 +34,7 @@ class Radish_WebP_Admin {
     }
 
     public function register_admin_menu() {
-        // 1. 在 WordPress 左侧主菜单栏注册独立的一级顶级菜单（紧邻【媒体】下方）
+        // 1. 在 WordPress 左侧主菜单栏注册独立的一级顶级菜单（位于【设置】下方、底部独立插件专区）
         add_menu_page(
             __('🥕 Radish WebP', 'webp-radish-webp-optimizer'),
             __('🥕 Radish WebP', 'webp-radish-webp-optimizer'),
@@ -42,7 +42,7 @@ class Radish_WebP_Admin {
             'radish-webp-settings',
             array($this, 'render_admin_page'),
             'dashicons-images-alt2',
-            11
+            99.5
         );
 
         // 2. 注册左侧二级菜单（设置面板）
