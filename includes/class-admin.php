@@ -273,8 +273,9 @@ class Radish_WebP_Admin {
             return;
         }
 
-        wp_enqueue_style('radish-webp-admin-css', RADISH_WEBP_URL . 'assets/admin.css', array(), RADISH_WEBP_VERSION);
-        wp_enqueue_script('radish-webp-admin-js', RADISH_WEBP_URL . 'assets/admin.js', array('jquery'), RADISH_WEBP_VERSION, true);
+        $ver = RADISH_WEBP_VERSION . '.' . time();
+        wp_enqueue_style('radish-webp-admin-css', RADISH_WEBP_URL . 'assets/admin.css', array(), $ver);
+        wp_enqueue_script('radish-webp-admin-js', RADISH_WEBP_URL . 'assets/admin.js', array('jquery'), $ver, true);
 
         wp_localize_script('radish-webp-admin-js', 'radishWebpData', array(
             'ajaxUrl' => admin_url('admin-ajax.php'),
@@ -513,7 +514,7 @@ class Radish_WebP_Admin {
         </div>
 
         <!-- 3. 全屏独立大模态弹窗工作台 -->
-        <div id="radish-bulk-modal" class="visil-modal-overlay">
+        <div id="radish-bulk-modal" class="visil-modal-overlay" style="display:none;">
             <div class="visil-modal-container">
                 <div class="visil-modal-header">
                     <h2>🚀 <?php echo radish_esc_html_t('Bulk Optimization Workbench'); ?></h2>
@@ -595,11 +596,11 @@ class Radish_WebP_Admin {
         </div>
 
         <!-- 4. 高清大图灯箱预览 -->
-        <div id="radish-lightbox-modal" class="radish-lightbox-overlay">
+        <div id="radish-lightbox-modal" class="radish-lightbox-overlay" style="display:none;">
             <div class="radish-lightbox-container">
                 <button type="button" id="btn-close-lightbox" class="radish-lightbox-close">&times;</button>
                 <div class="radish-lightbox-img-wrap">
-                    <img id="radish-lightbox-img" src="" alt="<?php echo esc_attr(radish_t('Image Preview')); ?>">
+                    <img id="radish-lightbox-img" src="" alt="" style="display:none;">
                 </div>
                 <div id="radish-lightbox-caption" class="radish-lightbox-caption"></div>
             </div>

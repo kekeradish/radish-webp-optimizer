@@ -46,7 +46,7 @@ jQuery(document).ready(function ($) {
     // 1. Modal Open / Close
     // -------------------------------------------------------------
     $btnOpenModal.on('click', function () {
-        $modal.addClass('active');
+        $modal.css('display', 'flex').hide().fadeIn(200).addClass('active');
         $('body').css('overflow', 'hidden');
         if (scannedItems.length === 0) {
             triggerScan();
@@ -74,7 +74,9 @@ jQuery(document).ready(function ($) {
     });
 
     function closeModal() {
-        $modal.removeClass('active');
+        $modal.fadeOut(150, function () {
+            $(this).removeClass('active');
+        });
         $('body').css('overflow', '');
     }
 
@@ -91,9 +93,9 @@ jQuery(document).ready(function ($) {
         var title = $(this).data('title') || s.previewTitle || 'Image Preview';
 
         if (fullUrl) {
-            $lightboxImg.attr('src', fullUrl);
+            $lightboxImg.attr('src', fullUrl).show();
             $lightboxCaption.text(title);
-            $lightbox.addClass('active');
+            $lightbox.css('display', 'flex').hide().fadeIn(200).addClass('active');
         }
     });
 
@@ -109,8 +111,10 @@ jQuery(document).ready(function ($) {
     });
 
     function closeLightbox() {
-        $lightbox.removeClass('active');
-        $lightboxImg.attr('src', '');
+        $lightbox.fadeOut(150, function () {
+            $(this).removeClass('active');
+            $lightboxImg.hide().attr('src', '');
+        });
     }
 
     // -------------------------------------------------------------
