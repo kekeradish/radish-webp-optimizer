@@ -1,10 +1,10 @@
 <?php
 /**
- * Plugin Name:       萝卜 WebP 大师 (Radish WebP Optimizer)
+ * Plugin Name:       Radish WebP Optimizer (萝卜 WebP 大师)
  * Plugin URI:        https://github.com/kekeradish/radish-webp-optimizer
- * Description:       【求知的萝卜】出品。自动将上传的 JPG/PNG 进行原图自身瘦身，并生成极致轻量的高质量 WebP 格式。支持前端 Picture 标签降级、大窗口批量勾选优化与原始图安全备份。
- * Version:           1.1.0
- * Author:            求知的萝卜
+ * Description:       Automatically optimize original JPG/PNG images and convert them into lightweight WebP format. Features visual lossless compression, large batch modal workbench, image lightbox preview, and safe backup.
+ * Version:           1.1.1
+ * Author:            求知的萝卜 (Radish Team)
  * Author URI:        https://mp.weixin.qq.com
  * License:           GPL-2.0+
  * Text Domain:       webp-radish-webp-optimizer
@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
     exit; // 防止直接访问
 }
 
-define('RADISH_WEBP_VERSION', '1.1.0');
+define('RADISH_WEBP_VERSION', '1.1.1');
 define('RADISH_WEBP_PATH', plugin_dir_path(__FILE__));
 define('RADISH_WEBP_URL', plugin_dir_url(__FILE__));
 define('RADISH_WEBP_BASENAME', plugin_basename(__FILE__));
@@ -51,11 +51,16 @@ final class Radish_WebP_Master {
 
     private function init_hooks() {
         register_activation_hook(__FILE__, array($this, 'activate'));
+        add_action('init', array($this, 'load_textdomain'));
 
         $this->converter      = new Radish_WebP_Engine();
         $this->frontend       = new Radish_WebP_Frontend();
         $this->admin          = new Radish_WebP_Admin();
         $this->bulk_processor = new Radish_WebP_Bulk_Processor();
+    }
+
+    public function load_textdomain() {
+        load_plugin_textdomain('webp-radish-webp-optimizer', false, dirname(plugin_basename(__FILE__)) . '/languages');
     }
 
     public function activate() {
@@ -65,7 +70,7 @@ final class Radish_WebP_Master {
             'delivery_mode'     => 'picture',
             'convert_on_upload' => 1,
             'optimize_original' => 1,
-            'orig_quality'      => 85,
+            'orig_quality'      => 82,
             'max_dimension'     => 2560,
             'backup_original'   => 0,
         );

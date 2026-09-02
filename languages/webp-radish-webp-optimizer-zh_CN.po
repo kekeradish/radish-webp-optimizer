@@ -1,13 +1,12 @@
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Radish WebP Optimizer 1.1.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/webp-radish-webp-optimizer\n"
 "POT-Creation-Date: 2026-09-02 17:38+0800\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2026-09-02 17:38+0800\n"
 "Last-Translator: 求知的萝卜 (Radish Team)\n"
-"Language-Team: English\n"
-"Language: en\n"
+"Language-Team: 简体中文\n"
+"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,304 +14,304 @@ msgstr ""
 "X-Domain: webp-radish-webp-optimizer\n"
 
 msgid "Settings"
-msgstr ""
+msgstr "设置"
 
 msgid "🥕 Radish WebP Optimizer"
-msgstr ""
+msgstr "🥕 萝卜 WebP 大师"
 
 msgid "Dual Optimization & Actions"
-msgstr ""
+msgstr "双重优化与单图操作"
 
 msgid "No metadata"
-msgstr ""
+msgstr "未生成元数据"
 
 msgid "File missing"
-msgstr ""
+msgstr "原图丢失"
 
 msgid "① Original:"
-msgstr ""
+msgstr "① 原图:"
 
 msgid "② WebP:"
-msgstr ""
+msgstr "② WebP:"
 
 msgid "② WebP: Not generated"
-msgstr ""
+msgstr "② WebP: 尚未生成"
 
 msgid "Optimize original image and generate WebP"
-msgstr ""
+msgstr "对原图进行自身瘦身并生成 WebP"
 
 msgid "Optimize"
-msgstr ""
+msgstr "单独优化"
 
 msgid "Restore initial uncompressed original image"
-msgstr ""
+msgstr "恢复最初未压缩原图母本"
 
 msgid "Restore"
-msgstr ""
+msgstr "恢复原图"
 
 msgid "Initial Upload Size:"
-msgstr ""
+msgstr "原始上传大小："
 
 msgid "① Optimized Original Size:"
-msgstr ""
+msgstr "① 原图瘦身后大小："
 
 msgid "② WebP Image Size:"
-msgstr ""
+msgstr "② WebP 二次优化大小："
 
 msgid "Total Savings:"
-msgstr ""
+msgstr "终极优化收益："
 
 msgid "② WebP Status:"
-msgstr ""
+msgstr "② WebP 状态："
 
 msgid "WebP copy has not been generated yet"
-msgstr ""
+msgstr "尚未生成 WebP 副本"
 
 msgid "Re-optimize Original + WebP"
-msgstr ""
+msgstr "单独重新优化原图+WebP"
 
 msgid "Restore Initial Image"
-msgstr ""
+msgstr "恢复最初原始图"
 
 msgid "Optimization Info & Actions"
-msgstr ""
+msgstr "优化操作与详情"
 
 msgid "Permission denied"
-msgstr ""
+msgstr "权限不足"
 
 msgid "Invalid attachment ID"
-msgstr ""
+msgstr "无效的图片 ID"
 
 msgid "Optimized successfully!"
-msgstr ""
+msgstr "优化成功！"
 
 msgid "Optimization failed or original image missing"
-msgstr ""
+msgstr "优化失败或原图不存在"
 
 msgid "Restored initial original file successfully!"
-msgstr ""
+msgstr "已成功恢复最初原图！"
 
 msgid "No backup file found for this image"
-msgstr ""
+msgstr "未找到该图片的原始备份文件"
 
 msgid "Start Bulk Optimization"
-msgstr ""
+msgstr "开始批量优化选中的图片"
 
 msgid "Optimizing..."
-msgstr ""
+msgstr "正在批量优化中..."
 
 msgid "🎉 All selected images have been optimized successfully!"
-msgstr ""
+msgstr "🎉 选中的所有图片已全部优化完成！"
 
 msgid "An error occurred during operation"
-msgstr ""
+msgstr "操作过程中发生错误"
 
 msgid "Restoring..."
-msgstr ""
+msgstr "正在恢复..."
 
 msgid "✔ Restored successfully"
-msgstr ""
+msgstr "✔ 恢复成功"
 
 msgid "✔ Optimized successfully"
-msgstr ""
+msgstr "✔ 优化成功"
 
 msgid "Are you sure you want to restore the initial uncompressed original file?"
-msgstr ""
+msgstr "确定要恢复该图片的最初原始文件吗？"
 
 msgid "Please select at least one image!"
-msgstr ""
+msgstr "请至少勾选一张图片！"
 
 msgid "Please select at least one action (Optimize Original or Generate WebP)!"
-msgstr ""
+msgstr "请至少勾选一个处理项目（原图瘦身 或 WebP生成）！"
 
 msgid "Scanning media library images, please wait..."
-msgstr ""
+msgstr "正在扫描媒体库所有图片，请稍候..."
 
 msgid "No JPG/PNG images found in media library"
-msgstr ""
+msgstr "未在媒体库扫描到 JPG/PNG 格式图片"
 
 msgid "🟢 Generated"
-msgstr ""
+msgstr "🟢 已生成 WebP"
 
 msgid "⚪ Not Generated"
-msgstr ""
+msgstr "⚪ 未生成"
 
 msgid "Scan failed, please check network connection"
-msgstr ""
+msgstr "扫描请求失败，请检查网络"
 
 msgid "Image Preview"
-msgstr ""
+msgstr "大图预览"
 
 msgid "🔍 Click to view large image preview"
-msgstr ""
+msgstr "🔍 点击弹出大图预览"
 
 msgid "Upload date:"
-msgstr ""
+msgstr "上传日期:"
 
 msgid "Re-optimize selected images"
-msgstr ""
+msgstr "重新优化选中的图片"
 
 msgid "Crafted by Radish Team (求知的萝卜): Dual-stage optimization architecture for massive server storage savings and lightning-fast WebP loading."
-msgstr ""
+msgstr "由 求知的萝卜 倾力打造：原图智能瘦身 + WebP 终极二次优化双重架构，兼顾服务器磁盘与前台秒开速度。"
 
 msgid "System Health & Environment"
-msgstr ""
+msgstr "系统环境检测"
 
 msgid "Current PHP Version:"
-msgstr ""
+msgstr "当前 PHP 引擎版本："
 
 msgid "Image Processing Driver:"
-msgstr ""
+msgstr "图像处理核心驱动："
 
 msgid "Recommended, full metadata & color optimization supported"
-msgstr ""
+msgstr "推荐，完整支持色彩与元数据优化"
 
 msgid "WebP supported"
-msgstr ""
+msgstr "支持 WebP 格式"
 
 msgid "No WebP driver found (Please enable gd or imagick in php.ini)"
-msgstr ""
+msgstr "未检测到 WebP 驱动 (请在 php.ini 中启用 gd 或 imagick 扩展)"
 
 msgid "Core Optimization Settings"
-msgstr ""
+msgstr "双重优化核心配置"
 
 msgid "Enable Plugin Features"
-msgstr ""
+msgstr "启用插件功能"
 
 msgid "Master switch. Disabling stops frontend replacement and automatic conversion."
-msgstr ""
+msgstr "总开关。关闭后将停止前端替换与自动优化。"
 
 msgid "Auto Convert on Upload"
-msgstr ""
+msgstr "上传新图时自动优化"
 
 msgid "Automatically optimize original images and generate WebP files upon uploading new JPG/PNG."
-msgstr ""
+msgstr "上传 JPG/PNG 时，自动进行【原图自身瘦身】+【WebP 副本生成】。"
 
 msgid "Original Image Slimming & Safe Backup"
-msgstr ""
+msgstr "原图瘦身与安全备份"
 
 msgid "Enable Original Image Slimming Optimization"
-msgstr ""
+msgstr "开启原图自身瘦身优化"
 
 msgid "Strip EXIF metadata and perform smart color quantization on JPG/PNG originals to drastically save server disk space!"
-msgstr ""
+msgstr "对原 JPG/PNG 剥离 EXIF 元数据并进行 256 色智能色彩量化与高保真压缩，大幅节省服务器磁盘！"
 
 msgid "Keep Initial Master Backup (.radish_bak)"
-msgstr ""
+msgstr "保留原始母本备份（安全备份）"
 
 msgid "Preserve a .radish_bak backup before slimming. Enables one-click restoration in Media Library anytime."
-msgstr ""
+msgstr "瘦身前保留一份 .radish_bak 原始备份文件。开启后可在媒体库随时一键【恢复最初原图】。"
 
 msgid "Original Image Quality:"
-msgstr ""
+msgstr "原图压缩质量："
 
 msgid "(Recommended: 82% ~ 85% for high visual fidelity)"
-msgstr ""
+msgstr "(建议 82% ~ 85%，确保原图母本高保真)"
 
 msgid "Max Original Resolution Dimension:"
-msgstr ""
+msgstr "原图最大分辨率限制："
 
 msgid "(Prevents 4K/6K giant photos from filling up server disk. 0 for unlimited)"
-msgstr ""
+msgstr "(防止相机 4K/6K 巨幅原片撑爆服务器，0为不限制)"
 
 msgid "WebP Conversion Quality"
-msgstr ""
+msgstr "WebP 二次终极优化质量"
 
 msgid "WebP quality delivered to website visitors. Recommended: 75% ~ 82% (sweet spot for size & quality)."
-msgstr ""
+msgstr "前台访客加载的 WebP 质量。推荐 75% ~ 82%（肉眼几乎无损且体积最小）。"
 
 msgid "Frontend Delivery Mode"
-msgstr ""
+msgstr "前端输出与降级模式"
 
 msgid "HTML5 <picture> Mode (Strongly Recommended)"
-msgstr ""
+msgstr "HTML5 <picture> 模式（强烈推荐）"
 
 msgid "Modern browsers load WebP, legacy clients automatically fallback to original images. 100% zero broken images."
-msgstr ""
+msgstr "现代浏览器加载超轻 WebP，老旧客户端自动加载瘦身后的原图，100% 零破图。"
 
 msgid "Direct URL Replacement Mode"
-msgstr ""
+msgstr "直接替换模式"
 
 msgid "Directly replaces <img src="..."> image URLs with .webp URLs."
-msgstr ""
+msgstr "直接将 <img src=\"...\"> 替换为 WebP 格式 URL。"
 
 msgid "Save Changes"
-msgstr ""
+msgstr "保存配置"
 
 msgid "Bulk Optimization Workbench"
-msgstr ""
+msgstr "批量图片优化工作台"
 
 msgid "Scan and filter all media library images in an independent large modal dialog with large preview, selection, and dual-optimization."
-msgstr ""
+msgstr "以独立大窗口形式直观扫描、筛选全站图片，支持高清大图预览、自定义勾选与实时双重优化。"
 
 msgid "No Horizontal Scroll:"
-msgstr ""
+msgstr "全屏宽阔视野："
 
 msgid "Full wide-screen overview in one single screen;"
-msgstr ""
+msgstr "告别窄小边栏，无左右滑动一屏全显；"
 
 msgid "Lightbox Large Preview:"
-msgstr ""
+msgstr "大图灯箱预览："
 
 msgid "Click thumbnails to inspect high-res image quality;"
-msgstr ""
+msgstr "点击缩略图直接弹出高清大图细致核验画质；"
 
 msgid "Batch Selection:"
-msgstr ""
+msgstr "精准批量选择："
 
 msgid "Select all, invert selection, or unconverted only."
-msgstr ""
+msgstr "一键全选、反选或仅选未优化图片。"
 
 msgid "Open Bulk Optimization Workbench"
-msgstr ""
+msgstr "🔍 打开批量优化管理大窗口"
 
 msgid "Radish WebP Optimizer — Bulk Workbench"
-msgstr ""
+msgstr "🥕 萝卜 WebP 大师 — 批量优化工作台"
 
 msgid "Close (ESC)"
-msgstr ""
+msgstr "关闭窗口 (ESC)"
 
 msgid "Actions:"
-msgstr ""
+msgstr "处理项目："
 
 msgid "Original Slimming"
-msgstr ""
+msgstr "① 原图瘦身优化"
 
 msgid "Generate WebP"
-msgstr ""
+msgstr "② 生成/更新 WebP"
 
 msgid "Rescan"
-msgstr ""
+msgstr "🔄 重新扫描"
 
 msgid "Select All"
-msgstr ""
+msgstr "全选"
 
 msgid "Deselect All"
-msgstr ""
+msgstr "取消全选"
 
 msgid "Unconverted Only"
-msgstr ""
+msgstr "仅选未优化图片"
 
 msgid "Selected:"
-msgstr ""
+msgstr "已勾选"
 
 msgid "Thumbnail"
-msgstr ""
+msgstr "缩略图"
 
 msgid "File Name / Upload Date"
-msgstr ""
+msgstr "文件名 / 上传日期"
 
 msgid "Original Size"
-msgstr ""
+msgstr "原图体积"
 
 msgid "WebP Size"
-msgstr ""
+msgstr "WebP 体积"
 
 msgid "Status"
-msgstr ""
+msgstr "当前状态"
 
 msgid "Ready to start..."
-msgstr ""
+msgstr "准备开始..."
 
 msgid "Preview"
-msgstr ""
+msgstr "大图预览"

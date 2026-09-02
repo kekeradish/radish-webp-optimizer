@@ -1,12 +1,14 @@
 /**
- * 萝卜 WebP 大师 (Radish WebP Optimizer)
- * 媒体库扫描、全屏大模态弹窗、无左右滑动一屏全显、大图点击放大预览灯箱与异步批量优化
+ * Radish WebP Optimizer (萝卜 WebP 大师) v1.1.1
+ * Bilingual (i18n), Modal Workbench, Lightbox & Asynchronous Bulk Optimization
  */
 jQuery(document).ready(function ($) {
     var scannedItems = [];
     var queue = [];
     var totalItems = 0;
     var processedCount = 0;
+
+    var s = (typeof radishWebpData !== 'undefined' && radishWebpData.strings) ? radishWebpData.strings : {};
 
     var $modal = $('#radish-bulk-modal');
     var $btnOpenModal = $('#btn-open-modal');
@@ -27,14 +29,14 @@ jQuery(document).ready(function ($) {
     var $progressText = $('#bulk-progress-text');
     var $progressPercent = $('#bulk-progress-percent');
 
-    // 灯箱 DOM
+    // Lightbox DOM
     var $lightbox = $('#radish-lightbox-modal');
     var $lightboxImg = $('#radish-lightbox-img');
     var $lightboxCaption = $('#radish-lightbox-caption');
     var $btnCloseLightbox = $('#btn-close-lightbox');
 
     // -------------------------------------------------------------
-    // 1. 批量大弹窗打开与关闭
+    // 1. Modal Open / Close
     // -------------------------------------------------------------
     $btnOpenModal.on('click', function () {
         $modal.addClass('active');
@@ -74,12 +76,12 @@ jQuery(document).ready(function ($) {
     });
 
     // -------------------------------------------------------------
-    // 2. 点击缩略图弹出放大灯箱 (Lightbox)
+    // 2. Click Thumbnail to open Lightbox
     // -------------------------------------------------------------
     $(document).on('click', '.visil-thumb-img', function (e) {
         e.stopPropagation();
         var fullUrl = $(this).data('full-url') || $(this).attr('src');
-        var title = $(this).data('title') || '图片预览';
+        var title = $(this).data('title') || s.previewTitle || 'Image Preview';
 
         if (fullUrl) {
             $lightboxImg.attr('src', fullUrl);
@@ -105,7 +107,7 @@ jQuery(document).ready(function ($) {
     }
 
     // -------------------------------------------------------------
-    // 3. 扫描媒体库
+    // 3. Scan Media Library
     // -------------------------------------------------------------
     function triggerScan() {
         $loadingState.show();
@@ -125,27 +127,33 @@ jQuery(document).ready(function ($) {
                 $totalCount.text(res.data.total);
                 renderTable(scannedItems);
             } else {
-                alert(res.data.message || '扫描失败');
+                alert(res.data.message || s.scanFailed || 'Scan failed');
             }
         }).fail(function () {
             $loadingState.hide();
             $table.show();
-            alert('扫描请求失败，请检查网络');
+            alert(s.scanFailed || 'Scan failed, please check network');
         });
     }
 
     function renderTable(items) {
         $tbody.empty();
         if (items.length === 0) {
-            $tbody.html('<tr><td colspan="6" style="text-align:center; padding:40px; color:#a7aaad; font-size:15px;">未扫描到 JPG/PNG 格式图片</td></tr>');
+            var noImagesText = s.noImages || 'No JPG/PNG images found';
+            $tbody.html('<tr><td colspan="6" style="text-align:center; padding:40px; color:#a7aaad; font-size:15px;">' + noImagesText + '</td></tr>');
             updateSelectedCount();
             return;
         }
 
+        var genBadge = s.generated || '🟢 Generated';
+        var notGenBadge = s.notGenerated || '⚪ Not Generated';
+        var hoverText = s.previewHover || '🔍 Click to view large image preview';
+        var datePrefix = s.uploadDate || 'Upload date:';
+
         items.forEach(function (item) {
             var badgeHtml = item.has_webp 
-                ? '<span class="badge badge-success" style="font-size:11px;">🟢 已生成</span>' 
-                : '<span class="badge badge-danger" style="font-size:11px;">⚪ 未生成</span>';
+                ? '<span class="badge badge-success" style="font-size:11px;">' + genBadge + '</span>' 
+                : '<span class="badge badge-danger" style="font-size:11px;">' + notGenBadge + '</span>';
 
             var origHtml = '<strong>' + item.orig_size + '</strong>';
             var webpHtml = item.has_webp && item.webp_size 
@@ -154,13 +162,13 @@ jQuery(document).ready(function ($) {
 
             var previewUrl = item.full_img || item.thumb;
             var thumbImg = item.thumb 
-                ? '<img src="' + item.thumb + '" data-full-url="' + previewUrl + '" data-title="' + item.title + '" class="visil-thumb-img" title="🔍 点击弹出放大预览">' 
+                ? '<img src="' + item.thumb + '" data-full-url="' + previewUrl + '" data-title="' + item.title + '" class="visil-thumb-img" title="' + hoverText + '">' 
                 : '<span style="font-size:24px;">🖼️</span>';
 
             var tr = '<tr id="scan-row-' + item.id + '" data-has-webp="' + (item.has_webp ? '1' : '0') + '">' +
                 '<td style="text-align:center;"><input type="checkbox" class="media-check-item" value="' + item.id + '" checked></td>' +
                 '<td style="text-align:center;">' + thumbImg + '</td>' +
-                '<td><strong style="color:#1d2327; font-size:13px; line-height:1.4;">' + item.title + '</strong><br><small style="color:#8c8f94;">上传日期: ' + item.date + ' (ID: ' + item.id + ')</small></td>' +
+                '<td><strong style="color:#1d2327; font-size:13px; line-height:1.4;">' + item.title + '</strong><br><small style="color:#8c8f94;">' + datePrefix + ' ' + item.date + ' (ID: ' + item.id + ')</small></td>' +
                 '<td id="orig-size-' + item.id + '">' + origHtml + '</td>' +
                 '<td id="webp-size-' + item.id + '">' + webpHtml + '</td>' +
                 '<td id="status-cell-' + item.id + '" style="text-align:center;">' + badgeHtml + '</td>' +
@@ -181,7 +189,7 @@ jQuery(document).ready(function ($) {
     }
 
     // -------------------------------------------------------------
-    // 4. 勾选与筛选联动
+    // 4. Checkbox Controls
     // -------------------------------------------------------------
     $thSelectAll.on('change', function () {
         var checked = $(this).is(':checked');
@@ -213,7 +221,7 @@ jQuery(document).ready(function ($) {
     });
 
     // -------------------------------------------------------------
-    // 5. 执行大窗口批量处理
+    // 5. Bulk Optimization Execution
     // -------------------------------------------------------------
     $btnStart.on('click', function () {
         queue = [];
@@ -222,7 +230,7 @@ jQuery(document).ready(function ($) {
         });
 
         if (queue.length === 0) {
-            alert('请至少勾选一张图片！');
+            alert(s.noSelected || 'Please select at least one image!');
             return;
         }
 
@@ -230,18 +238,18 @@ jQuery(document).ready(function ($) {
         var doGenWebp = $('#bulk_gen_webp').is(':checked') ? 1 : 0;
 
         if (!doOptOrig && !doGenWebp) {
-            alert('请至少勾选一个处理项目（原图瘦身 或 WebP生成）！');
+            alert(s.noOptionSelected || 'Please select at least one action!');
             return;
         }
 
         totalItems = queue.length;
         processedCount = 0;
 
-        $btnStart.prop('disabled', true).text('正在批量优化中...');
+        $btnStart.prop('disabled', true).text(s.processing || 'Optimizing...');
         $progressContainer.show();
         $progressBar.css('width', '0%');
         $progressPercent.text('0%');
-        $progressText.text('正在处理选中的 ' + totalItems + ' 张图片...');
+        $progressText.text((s.processing || 'Optimizing...') + ' (' + totalItems + ')');
 
         processNext();
     });
@@ -250,8 +258,8 @@ jQuery(document).ready(function ($) {
         if (queue.length === 0) {
             $progressBar.css('width', '100%');
             $progressPercent.text('100%');
-            $progressText.text('🎉 选中的 ' + totalItems + ' 张图片全部优化完成！');
-            $btnStart.prop('disabled', false).text('重新优化选中的图片');
+            $progressText.text(s.completed || '🎉 All selected images have been optimized successfully!');
+            $btnStart.prop('disabled', false).text(s.reOptimizeBtn || 'Re-optimize selected images');
             return;
         }
 
@@ -261,12 +269,12 @@ jQuery(document).ready(function ($) {
         var percent = Math.round((processedCount / totalItems) * 100);
         $progressBar.css('width', percent + '%');
         $progressPercent.text(percent + '%');
-        $progressText.text('正在处理第 ' + processedCount + ' / ' + totalItems + ' 张 (ID: ' + currentId + ')');
+        $progressText.text(s.processing + ' (' + processedCount + ' / ' + totalItems + ') ID: ' + currentId);
 
         var $statusCell = $('#status-cell-' + currentId);
         var $origCell = $('#orig-size-' + currentId);
         var $webpCell = $('#webp-size-' + currentId);
-        $statusCell.html('<span style="color:#2271b1; font-weight:600; font-size:12px;">⏳ 优化中...</span>');
+        $statusCell.html('<span style="color:#2271b1; font-weight:600; font-size:12px;">⏳ ' + (s.optimizing || 'Optimizing...') + '</span>');
 
         var doOptOrig = $('#bulk_opt_orig').is(':checked') ? 1 : 0;
         var doGenWebp = $('#bulk_gen_webp').is(':checked') ? 1 : 0;
@@ -280,7 +288,7 @@ jQuery(document).ready(function ($) {
             skip_exists: 0
         }, function (res) {
             if (res.success) {
-                $statusCell.html('<span class="badge badge-success" style="font-size:11px;">✔ 已完成</span>');
+                $statusCell.html('<span class="badge badge-success" style="font-size:11px;">✔ ' + (s.generated || 'Done') + '</span>');
                 if (res.data.new_orig_size) {
                     $origCell.html('<strong>' + res.data.new_orig_size + '</strong>');
                 }
@@ -289,17 +297,17 @@ jQuery(document).ready(function ($) {
                 }
                 $('#scan-row-' + currentId).attr('data-has-webp', '1');
             } else {
-                $statusCell.html('<span class="badge badge-danger" style="font-size:11px;">✖ 失败</span>');
+                $statusCell.html('<span class="badge badge-danger" style="font-size:11px;">✖ Error</span>');
             }
             processNext();
         }).fail(function () {
-            $statusCell.html('<span class="badge badge-danger" style="font-size:11px;">✖ 超时</span>');
+            $statusCell.html('<span class="badge badge-danger" style="font-size:11px;">✖ Timeout</span>');
             processNext();
         });
     }
 
     // -------------------------------------------------------------
-    // 6. 媒体库列表页单图单独优化与恢复
+    // 6. Media Library Single Item Actions
     // -------------------------------------------------------------
     $(document).on('click', '.btn-radish-single-opt', function (e) {
         e.preventDefault();
@@ -308,7 +316,7 @@ jQuery(document).ready(function ($) {
         if (!attachmentId || $btn.prop('disabled')) return;
 
         var oldText = $btn.text();
-        $btn.prop('disabled', true).text(radishWebpData.strings.optimizing || '正在优化...');
+        $btn.prop('disabled', true).text(s.optimizing || 'Optimizing...');
 
         $.post(radishWebpData.ajaxUrl, {
             action: 'radish_webp_optimize_single_action',
@@ -316,30 +324,30 @@ jQuery(document).ready(function ($) {
             attachment_id: attachmentId
         }, function (res) {
             if (res.success) {
-                $btn.text('✔ 优化成功');
+                $btn.text(s.optimizeSuccess || '✔ Optimized successfully');
                 setTimeout(function () {
                     location.reload();
                 }, 800);
             } else {
-                alert(res.data.message || '优化失败');
+                alert(res.data.message || s.error || 'Optimization failed');
                 $btn.prop('disabled', false).text(oldText);
             }
         }).fail(function () {
-            alert('请求失败，请检查网络');
+            alert(s.error || 'Request failed, please check network');
             $btn.prop('disabled', false).text(oldText);
         });
     });
 
     $(document).on('click', '.btn-radish-single-restore', function (e) {
         e.preventDefault();
-        if (!confirm('确定要恢复该图片的最初原始文件吗？')) return;
+        if (!confirm(s.confirmRestore || 'Are you sure you want to restore the initial uncompressed original file?')) return;
 
         var $btn = $(this);
         var attachmentId = $btn.data('id');
         if (!attachmentId || $btn.prop('disabled')) return;
 
         var oldText = $btn.text();
-        $btn.prop('disabled', true).text(radishWebpData.strings.restoring || '正在恢复...');
+        $btn.prop('disabled', true).text(s.restoring || 'Restoring...');
 
         $.post(radishWebpData.ajaxUrl, {
             action: 'radish_webp_restore_single_action',
@@ -347,16 +355,16 @@ jQuery(document).ready(function ($) {
             attachment_id: attachmentId
         }, function (res) {
             if (res.success) {
-                $btn.text('✔ 恢复成功');
+                $btn.text(s.restoreSuccess || '✔ Restored successfully');
                 setTimeout(function () {
                     location.reload();
                 }, 800);
             } else {
-                alert(res.data.message || '恢复失败');
+                alert(res.data.message || s.error || 'Restore failed');
                 $btn.prop('disabled', false).text(oldText);
             }
         }).fail(function () {
-            alert('请求失败，请检查网络');
+            alert(s.error || 'Request failed, please check network');
             $btn.prop('disabled', false).text(oldText);
         });
     });
