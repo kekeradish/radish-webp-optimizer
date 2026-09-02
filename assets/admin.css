@@ -357,20 +357,16 @@ input:checked + .slider:before {
     bottom: 0;
     background: rgba(15, 23, 42, 0.75);
     backdrop-filter: blur(8px);
-    z-index: 99999;
-    display: flex;
+    z-index: 9999999 !important;
+    display: none;
     align-items: center;
     justify-content: center;
     padding: 20px;
     box-sizing: border-box;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .visil-modal-overlay.active {
-    opacity: 1;
-    visibility: visible;
+    display: flex !important;
 }
 
 .visil-modal-container {
@@ -384,12 +380,7 @@ input:checked + .slider:before {
     flex-direction: column;
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    transform: scale(0.97) translateY(8px);
-    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.visil-modal-overlay.active .visil-modal-container {
-    transform: scale(1) translateY(0);
+    animation: radishPopIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .visil-modal-header {

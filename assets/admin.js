@@ -43,17 +43,19 @@ jQuery(document).ready(function ($) {
     });
 
     // -------------------------------------------------------------
-    // 1. Modal Open / Close
+    // 1. Modal Open / Close (全局委托确保 100% 触发)
     // -------------------------------------------------------------
-    $btnOpenModal.on('click', function () {
-        $modal.css('display', 'flex').hide().fadeIn(200).addClass('active');
+    $(document).on('click', '#btn-open-modal, .btn-open-modal', function (e) {
+        e.preventDefault();
+        $('#radish-bulk-modal').css('display', 'flex').addClass('active');
         $('body').css('overflow', 'hidden');
         if (scannedItems.length === 0) {
             triggerScan();
         }
     });
 
-    $btnCloseModal.on('click', function () {
+    $(document).on('click', '#btn-close-modal', function (e) {
+        e.preventDefault();
         closeModal();
     });
 
