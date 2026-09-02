@@ -65,7 +65,7 @@ class Radish_WebP_Bulk_Processor {
             if ($initial_size && $initial_size > $orig_size) {
                 $saved_pct = round((($initial_size - $orig_size) / $initial_size) * 100);
                 if ($saved_pct > 0) {
-                    $orig_size_display = '<del style="color:#94a3b8; font-size:12px;">' . size_format($initial_size, 1) . '</del> → <strong style="color:#2563eb;">' . size_format($orig_size, 1) . '</strong> <span style="color:#2563eb; font-weight:700; font-size:11px;">(-' . $saved_pct . '%)</span>';
+                    $orig_size_display = '<strong style="color:#2563eb;">' . size_format($orig_size, 1) . '</strong> <span style="color:#2563eb; font-weight:700; font-size:11.5px;">(-' . $saved_pct . '%)</span>';
                 }
             }
 
@@ -188,14 +188,8 @@ class Radish_WebP_Bulk_Processor {
                     $saved_bytes = $initial_size_bytes - $current_orig_bytes;
                     $saved_pct = round(($saved_bytes / $initial_size_bytes) * 100);
                     if ($saved_pct > 0) {
-                        $new_orig_size_str = '<del style="color:#94a3b8; font-size:12px;">' . size_format($initial_size_bytes, 1) . '</del> → <strong style="color:#2563eb;">' . size_format($current_orig_bytes, 1) . '</strong> <span style="color:#2563eb; font-weight:700; font-size:11px;">(-' . $saved_pct . '%)</span>';
-                    } elseif ($saved_bytes > 0) {
-                        $new_orig_size_str = '<del style="color:#94a3b8; font-size:12px;">' . size_format($initial_size_bytes, 1) . '</del> → <strong style="color:#2563eb;">' . size_format($current_orig_bytes, 1) . '</strong> <span style="color:#2563eb; font-weight:700; font-size:11px;">(-' . size_format($saved_bytes) . ')</span>';
-                    } else {
-                        $new_orig_size_str = '<strong style="color:#2563eb;">' . size_format($current_orig_bytes, 1) . '</strong>';
+                        $new_orig_size_str = '<strong style="color:#2563eb;">' . size_format($current_orig_bytes, 1) . '</strong> <span style="color:#2563eb; font-weight:700; font-size:11.5px;">(-' . $saved_pct . '%)</span>';
                     }
-                } else {
-                    $new_orig_size_str = '<strong style="color:#2563eb;">' . size_format($current_orig_bytes, 1) . '</strong>';
                 }
             }
 
