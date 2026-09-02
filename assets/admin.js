@@ -90,34 +90,57 @@ jQuery(document).ready(function ($) {
     });
 
     // -------------------------------------------------------------
-    // 2. Click Thumbnail to open Lightbox
+    // 2. High-res Lightbox Preview (全局直调 + 双重保底)
     // -------------------------------------------------------------
+    window.radishOpenLightbox = function (url, title) {
+        if (!url) return;
+        var modal = document.getElementById('radish-lightbox-modal');
+        var img = document.getElementById('radish-lightbox-img');
+        var cap = document.getElementById('radish-lightbox-caption');
+        if (modal && img) {
+            img.src = url;
+            if (cap) cap.innerText = title || '';
+            modal.style.display = 'flex';
+            modal.classList.add('active');
+        }
+    };
+
+    window.radishCloseLightbox = function (e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        var modal = document.getElementById('radish-lightbox-modal');
+        var img = document.getElementById('radish-lightbox-img');
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.remove('active');
+        }
+        if (img) {
+            img.src = '';
+        }
+    };
+
     $(document).on('click', '.visil-thumb-img', function (e) {
         e.stopPropagation();
         var fullUrl = $(this).data('full-url') || $(this).attr('src');
         var title = $(this).data('title') || s.previewTitle || 'Image Preview';
-
-        if (fullUrl) {
-            $lightboxImg.attr('src', fullUrl).show();
-            $lightboxCaption.text(title);
-            $lightbox.css('display', 'flex').addClass('active');
-        }
+        window.radishOpenLightbox(fullUrl, title);
     });
 
     $(document).on('click', '#btn-close-lightbox', function (e) {
         e.stopPropagation();
-        closeLightbox();
+        window.radishCloseLightbox(e);
     });
 
     $lightbox.on('click', function (e) {
-        if ($(e.target).is('#radish-lightbox-modal') || $(e.target).hasClass('radish-lightbox-overlay') || $(e.target).hasClass('radish-lightbox-container') || $(e.target).hasClass('radish-lightbox-img-wrap')) {
-            closeLightbox();
+        if ($(e.target).is('#radish-lightbox-modal') || $(e.target).hasClass('radish-lightbox-overlay')) {
+            window.radishCloseLightbox(e);
         }
     });
 
     function closeLightbox() {
-        $lightbox.css('display', 'none').removeClass('active');
-        $lightboxImg.hide().attr('src', '');
+        window.radishCloseLightbox();
     }
 
     // -------------------------------------------------------------
@@ -177,8 +200,9 @@ jQuery(document).ready(function ($) {
                 : '<span style="color:#a7aaad;">—</span>';
 
             var previewUrl = item.full_img || item.thumb;
+            var safeTitle = (item.title || '').replace(/'/g, "\\'");
             var thumbImg = item.thumb 
-                ? '<img src="' + item.thumb + '" data-full-url="' + previewUrl + '" data-title="' + item.title + '" class="visil-thumb-img" title="' + hoverText + '">' 
+                ? '<img src="' + item.thumb + '" data-full-url="' + previewUrl + '" data-title="' + safeTitle + '" onclick="event.stopPropagation(); window.radishOpenLightbox && window.radishOpenLightbox(\'' + previewUrl + '\', \'' + safeTitle + '\');" class="visil-thumb-img" title="' + hoverText + '">' 
                 : '<span style="font-size:24px;">🖼️</span>';
 
             rowsHtml += '<tr id="scan-row-' + item.id + '" class="row-selected" data-has-webp="' + (item.has_webp ? '1' : '0') + '">' +

@@ -598,10 +598,10 @@ input:checked + .slider:before {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(15, 23, 42, 0.88);
-    backdrop-filter: blur(10px);
-    z-index: 99999999 !important;
-    display: none !important; /* 默认彻底隐藏，杜绝任何页面底部残影 */
+    background: rgba(15, 23, 42, 0.9);
+    backdrop-filter: blur(12px);
+    z-index: 2147483647 !important; /* 绝对最高顶层，确保盖过一切弹窗 */
+    display: none;
     align-items: center;
     justify-content: center;
     padding: 24px;
