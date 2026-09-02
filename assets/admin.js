@@ -32,8 +32,16 @@ jQuery(document).ready(function ($) {
     // Lightbox DOM
     var $lightbox = $('#radish-lightbox-modal');
     var $lightboxImg = $('#radish-lightbox-img');
-    var $lightboxCaption = $('#radish-lightbox-caption');
-    var $btnCloseLightbox = $('#btn-close-lightbox');
+    // -------------------------------------------------------------
+    // 0. Global Fallback Open Function
+    // -------------------------------------------------------------
+    window.radishOpenModalDirect = function () {
+        $('#radish-bulk-modal').css('display', 'flex').addClass('active');
+        $('body').css('overflow', 'hidden');
+        if (scannedItems.length === 0) {
+            triggerScan();
+        }
+    };
 
     // -------------------------------------------------------------
     // 0. Language Switcher Auto-submit
@@ -47,11 +55,7 @@ jQuery(document).ready(function ($) {
     // -------------------------------------------------------------
     $(document).on('click', '#btn-open-modal, .btn-open-modal', function (e) {
         e.preventDefault();
-        $('#radish-bulk-modal').css('display', 'flex').addClass('active');
-        $('body').css('overflow', 'hidden');
-        if (scannedItems.length === 0) {
-            triggerScan();
-        }
+        window.radishOpenModalDirect();
     });
 
     $(document).on('click', '#btn-close-modal', function (e) {

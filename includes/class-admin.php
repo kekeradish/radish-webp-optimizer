@@ -268,8 +268,11 @@ class Radish_WebP_Admin {
     }
 
     public function enqueue_admin_assets($hook) {
-        $allowed_pages = array('toplevel_page_radish-webp-settings', 'settings_page_radish-webp-settings', 'settings_page_radish-webp-settings-alt', 'upload.php', 'post.php');
-        if (!in_array($hook, $allowed_pages, true)) {
+        $is_radish_page = isset($_GET['page']) && (strpos($_GET['page'], 'radish-webp') !== false);
+        $is_media_page  = in_array($hook, array('upload.php', 'post.php', 'post-new.php'), true);
+
+        // 只要是插件后台、媒体库或包含 radish-webp 的页面，100% 确保加载样式和脚本
+        if (!$is_radish_page && !$is_media_page && strpos($hook, 'radish') === false) {
             return;
         }
 
@@ -369,7 +372,7 @@ class Radish_WebP_Admin {
                     </div>
                 </div>
                 <div class="radish-workbench-right">
-                    <button id="btn-open-modal" type="button" class="button button-primary button-hero" style="height:44px; line-height:42px; font-size:14px; padding:0 24px !important; border-radius:10px;">
+                    <button id="btn-open-modal" type="button" class="button button-primary button-hero btn-open-modal" onclick="if(window.radishOpenModalDirect){window.radishOpenModalDirect();}else{var m=document.getElementById('radish-bulk-modal');if(m){m.style.display='flex';m.classList.add('active');document.body.style.overflow='hidden';}}" style="height:44px; line-height:42px; font-size:14px; padding:0 24px !important; border-radius:10px;">
                         🔍 <?php echo radish_esc_html_t('Open Bulk Optimization Workbench'); ?>
                     </button>
                 </div>
