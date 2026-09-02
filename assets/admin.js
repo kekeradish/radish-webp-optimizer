@@ -190,7 +190,7 @@ jQuery(document).ready(function ($) {
                 ? '<span class="badge badge-success" style="font-size:11px;">' + genBadge + '</span>' 
                 : '<span class="badge badge-danger" style="font-size:11px;">' + notGenBadge + '</span>';
 
-            var origHtml = item.orig_size || '—';
+            var origHtml = '<strong>' + (item.orig_size || '—') + '</strong>';
             var webpHtml = item.has_webp && item.webp_size 
                 ? '<strong style="color:#008a20; font-weight:700;">' + item.webp_size + '</strong>' 
                 : '<span style="color:#a7aaad;">—</span>';

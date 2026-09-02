@@ -61,13 +61,7 @@ class Radish_WebP_Bulk_Processor {
                 $full_src = wp_get_attachment_image_src($post->ID, 'full');
             }
 
-            $orig_size_display = '<strong>' . size_format($orig_size, 1) . '</strong>';
-            if ($initial_size && $initial_size > $orig_size) {
-                $saved_pct = round((($initial_size - $orig_size) / $initial_size) * 100);
-                if ($saved_pct > 0) {
-                    $orig_size_display = '<strong style="color:#2563eb;">' . size_format($orig_size, 1) . '</strong> <span style="color:#2563eb; font-weight:700; font-size:11.5px;">(-' . $saved_pct . '%)</span>';
-                }
-            }
+            $orig_size_display = size_format($orig_size, 1);
 
             $items[] = array(
                 'id'            => $post->ID,
