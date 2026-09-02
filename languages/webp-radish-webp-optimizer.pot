@@ -152,7 +152,7 @@ msgstr ""
 msgid "Re-optimize selected images"
 msgstr ""
 
-msgid "由 求知的萝卜 倾力打造： Dual-stage optimization architecture for massive server storage savings and lightning-fast WebP loading."
+msgid "由 求知的萝卜 出品： Dual-stage optimization architecture for massive server storage savings and lightning-fast WebP loading."
 msgstr ""
 
 msgid "System Health & Environment"

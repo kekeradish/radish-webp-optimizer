@@ -151,8 +151,8 @@ msgstr "上传日期:"
 msgid "Re-optimize selected images"
 msgstr "重新优化选中的图片"
 
-msgid "由 求知的萝卜 倾力打造： Dual-stage optimization architecture for massive server storage savings and lightning-fast WebP loading."
-msgstr "由 求知的萝卜 倾力打造：原图智能瘦身 + WebP 终极二次优化双重架构，兼顾服务器磁盘与前台秒开速度。"
+msgid "Dual-stage optimization architecture for massive server storage savings and lightning-fast WebP loading."
+msgstr "双重图片优化架构：原图智能瘦身 + WebP 终极优化，兼顾服务器磁盘与前台秒开速度。"
 
 msgid "System Health & Environment"
 msgstr "系统环境检测"
