@@ -355,3 +355,9 @@ msgstr "大图灯箱预览"
 msgid "Batch Selection"
 msgstr "精准批量选择"
 
+msgid "🥕 Radish WebP"
+msgstr "🥕 萝卜 WebP"
+
+msgid "Settings & Dashboard"
+msgstr "核心设置与面板"
+

@@ -28,17 +28,39 @@ class Radish_WebP_Admin {
     }
 
     public function add_action_links($links) {
-        $settings_link = '<a href="' . admin_url('options-general.php?page=radish-webp-settings') . '">' . __('Settings', 'webp-radish-webp-optimizer') . '</a>';
+        $settings_link = '<a href="' . admin_url('admin.php?page=radish-webp-settings') . '">' . __('Settings', 'webp-radish-webp-optimizer') . '</a>';
         array_unshift($links, $settings_link);
         return $links;
     }
 
     public function register_admin_menu() {
+        // 1. 在 WordPress 左侧主菜单栏注册独立的一级顶级菜单（紧邻【媒体】下方）
+        add_menu_page(
+            __('🥕 Radish WebP', 'webp-radish-webp-optimizer'),
+            __('🥕 Radish WebP', 'webp-radish-webp-optimizer'),
+            'manage_options',
+            'radish-webp-settings',
+            array($this, 'render_admin_page'),
+            'dashicons-images-alt2',
+            11
+        );
+
+        // 2. 注册左侧二级菜单（设置面板）
+        add_submenu_page(
+            'radish-webp-settings',
+            __('Settings & Dashboard', 'webp-radish-webp-optimizer'),
+            __('Settings & Dashboard', 'webp-radish-webp-optimizer'),
+            'manage_options',
+            'radish-webp-settings',
+            array($this, 'render_admin_page')
+        );
+
+        // 3. 同时在常规【设置】中保留快捷入口
         add_options_page(
             __('🥕 Radish WebP Optimizer', 'webp-radish-webp-optimizer'),
             __('🥕 Radish WebP Optimizer', 'webp-radish-webp-optimizer'),
             'manage_options',
-            'radish-webp-settings',
+            'radish-webp-settings-alt',
             array($this, 'render_admin_page')
         );
     }
