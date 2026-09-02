@@ -108,6 +108,18 @@ git clone https://github.com/kekeradish/radish-webp-optimizer.git
 
 ---
 
+## ☕ 请作者喝杯咖啡 (Buy Me a Coffee)
+
+如果您觉得「**🥕 萝卜 WebP 大师**」切实帮您的网站节省了服务器磁盘和 CDN 流量费用、大幅提升了网页加载速度，欢迎扫码请作者喝杯咖啡 ☕！
+
+您的每一份支持，都是激励作者持续开源维护与迭代新特性的最大动力 ❤️！
+
+<p align="center">
+  <img src="assets/sponsor.jpg" width="240" alt="微信赞赏码" style="border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.12);" />
+</p>
+
+---
+
 ## 📄 开源许可证
 
 本项目基于 [GPL v2.0](LICENSE) 开源协议。
@@ -118,5 +130,6 @@ git clone https://github.com/kekeradish/radish-webp-optimizer.git
 
 欢迎关注微信公众号：**【求知的萝卜】**  
 第一时间获取更多极客工具、WordPress 深度调优与硬核效率干货！
+
 
 
