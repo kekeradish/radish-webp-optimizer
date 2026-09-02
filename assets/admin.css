@@ -1,6 +1,6 @@
 /**
  * Radish WebP Optimizer (萝卜 WebP 大师) v1.1.1
- * Full-Width, Zero-Scroll Responsive Dashboard Layout
+ * Ergonomic Centered Dashboard (Linear/Stripe-inspired)
  */
 
 :root {
@@ -15,52 +15,67 @@
     --radish-text-muted: #64748b;
     --radish-border: #e2e8f0;
     --radish-card-bg: #ffffff;
-    --radish-radius: 12px;
+    --radish-radius: 14px;
     --radish-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
-    --radish-shadow-hover: 0 8px 24px -3px rgba(15, 23, 42, 0.08), 0 4px 8px -2px rgba(15, 23, 42, 0.03);
+    --radish-shadow-hover: 0 10px 30px -4px rgba(15, 23, 42, 0.08), 0 4px 10px -2px rgba(15, 23, 42, 0.03);
 }
 
-/* 全宽铺满容器，彻底消除右侧大空白 */
+/* 黄金比例人体工学居中容器（解决大屏过宽拉裂与空旷感） */
 .visil-webp-wrap {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 16px 20px 24px 0 !important;
+    max-width: 1040px !important;
+    margin: 24px auto 40px auto !important;
     box-sizing: border-box;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
     color: var(--radish-text-main);
+    padding: 0 16px;
 }
 
 /* ==========================================================================
-   1. 顶部紧凑型一体化 Hero + 环境状态横条
+   1. 顶部现代化品牌 Header
    ========================================================================== */
 .radish-compact-header {
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     border-radius: var(--radish-radius);
-    padding: 16px 24px;
+    padding: 18px 24px;
     color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 20px;
-    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.12);
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
     flex-wrap: wrap;
     gap: 16px;
+    position: relative;
+    overflow: hidden;
+}
+
+.radish-compact-header::after {
+    content: "";
+    position: absolute;
+    right: -30px;
+    top: -30px;
+    width: 160px;
+    height: 160px;
+    background: radial-gradient(circle, rgba(255, 94, 54, 0.25) 0%, transparent 70%);
+    pointer-events: none;
 }
 
 .radish-header-brand {
     display: flex;
     align-items: center;
     gap: 14px;
+    z-index: 2;
 }
 
 .radish-brand-logo {
-    font-size: 32px;
+    font-size: 34px;
     line-height: 1;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.2));
 }
 
 .radish-brand-info h1 {
-    margin: 0 0 2px 0;
-    font-size: 19px;
+    margin: 0 0 3px 0;
+    font-size: 20px;
     font-weight: 700;
     color: #ffffff;
     display: flex;
@@ -80,15 +95,16 @@
 
 .radish-brand-info p {
     margin: 0;
-    font-size: 12px;
+    font-size: 12.5px;
     color: #94a3b8;
 }
 
 .radish-header-meta {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     flex-wrap: wrap;
+    z-index: 2;
 }
 
 .radish-meta-pill {
@@ -108,26 +124,74 @@
 }
 
 /* ==========================================================================
-   2. 双栏等高全宽仪表盘布局 (50% + 50%)
+   2. 核心大工作台 Hero 卡片 (Top Action Hero)
    ========================================================================== */
-.radish-dashboard-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+.radish-workbench-hero {
+    background: linear-gradient(135deg, #ffffff 0%, #fffbf9 100%);
+    border: 1.5px solid rgba(255, 94, 54, 0.35);
+    border-radius: var(--radish-radius);
+    padding: 20px 24px;
+    box-shadow: 0 6px 24px rgba(255, 94, 54, 0.08);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     gap: 20px;
-    align-items: start;
+    flex-wrap: wrap;
+    position: relative;
+    overflow: hidden;
 }
 
-@media (max-width: 1080px) {
-    .radish-dashboard-grid {
-        grid-template-columns: 1fr;
-    }
+.radish-workbench-left {
+    flex: 1;
+    min-width: 280px;
 }
 
+.radish-workbench-left h2 {
+    margin: 0 0 6px 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: #9a2c0c;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.radish-workbench-left p {
+    margin: 0 0 10px 0;
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.5;
+}
+
+.radish-workbench-badges {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    font-weight: 600;
+    color: #9a2c0c;
+}
+
+.radish-workbench-badges span {
+    background: var(--radish-primary-light);
+    border: 1px solid rgba(255, 94, 54, 0.2);
+    padding: 3px 10px;
+    border-radius: 6px;
+}
+
+.radish-workbench-right {
+    flex-shrink: 0;
+}
+
+/* ==========================================================================
+   3. 聚焦卡片与表单排版
+   ========================================================================== */
 .visil-card {
     background: var(--radish-card-bg);
     border: 1px solid var(--radish-border);
     border-radius: var(--radish-radius);
-    padding: 20px 24px;
+    padding: 22px 26px;
     box-shadow: var(--radish-shadow);
     margin-bottom: 20px;
     transition: all 0.25s ease;
@@ -150,14 +214,11 @@
     gap: 8px;
 }
 
-/* ==========================================================================
-   3. 紧凑型表单控件 (Zero-Scroll Form)
-   ========================================================================== */
 .radish-form-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 0;
+    padding: 12px 0;
     border-bottom: 1px dashed #f1f5f9;
 }
 
@@ -168,7 +229,7 @@
 
 .radish-form-label {
     flex: 1;
-    padding-right: 16px;
+    padding-right: 20px;
 }
 
 .radish-form-label strong {
@@ -189,7 +250,7 @@
     flex-shrink: 0;
 }
 
-/* 现代 iOS 风格 Switch 开关 */
+/* Switch 开关 */
 .switch {
     position: relative;
     display: inline-block;
@@ -241,7 +302,7 @@ input:checked + .slider:before {
     background: #f8fafc;
     border: 1px solid #e2e8f0;
     border-radius: 10px;
-    padding: 14px 16px;
+    padding: 14px 18px;
     margin-top: 10px;
 }
 
@@ -254,6 +315,7 @@ input:checked + .slider:before {
 
 .range-container input[type="range"] {
     flex: 1;
+    min-width: 180px;
     accent-color: var(--radish-primary);
     height: 6px;
 }
@@ -314,7 +376,7 @@ input:checked + .slider:before {
 .visil-modal-container {
     background: #ffffff;
     width: 95vw;
-    max-width: 1300px;
+    max-width: 1260px;
     height: 88vh;
     border-radius: 16px;
     box-shadow: 0 30px 90px rgba(0, 0, 0, 0.4);
