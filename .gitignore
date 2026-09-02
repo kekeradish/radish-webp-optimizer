@@ -1,0 +1,15 @@
+# OS generated files
+.DS_Store
+Thumbs.db
+*.tmp
+
+# Editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# WordPress generated / temporary
+*.log
+*.radish_bak
+*.zip
