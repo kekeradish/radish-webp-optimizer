@@ -108,40 +108,6 @@ git clone https://github.com/kekeradish/radish-webp-optimizer.git
 
 ---
 
-## 🤝 贡献者荣誉墙 (Contributors)
-
-非常感谢所有为「🥕 萝卜 WebP 大师」提交代码、改进建议与测试反馈的朋友们！
-
-<p align="center">
-  <a href="https://github.com/kekeradish/radish-webp-optimizer/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=kekeradish/radish-webp-optimizer" alt="Contributors" />
-  </a>
-</p>
-
-欢迎任何形式的贡献（包括但不限于 Bug 修复、性能调优、多语言国际化翻译或文档补充）！
-
----
-
-## 💡 需求征集与问题反馈 (Feedback & Roadmap)
-
-如果您在使用过程中遇到了任何问题，或者有非常期待的新功能，非常欢迎在 GitHub 上与我们交流：
-
-- 🐛 **提交 Bug 报告**：前往 [GitHub Issues](https://github.com/kekeradish/radish-webp-optimizer/issues/new) 反馈；
-- 🌟 **未来规划征集（Roadmap）**：
-  - [ ] 实验性支持下一代 **AVIF** 格式转换；
-  - [ ] 腾讯云 COS / 阿里云 OSS / 又拍云 CDN 自动刷新缓存联动；
-  - [ ] WP-Cron 定时自动化后台静默批量压缩任务。
-
----
-
-## 🙏 特别鸣谢与致谢 (Special Thanks)
-
-* ❤️ **微信公众号【求知的萝卜】全体粉丝**：感谢各位站长与读者的深度内测与宝贵反馈；
-* 🐼 **TinyPNG (Tinify)**：感谢其出色的 256 色调色板色彩量化思路为本项目原图瘦身提供的算法灵感；
-* 🌐 **WordPress 开源社区 & ImageMagick 团队**：感谢开源生态提供的坚实底层支持。
-
----
-
 ## 📄 开源许可证
 
 本项目基于 [GPL v2.0](LICENSE) 开源协议。
@@ -152,4 +118,5 @@ git clone https://github.com/kekeradish/radish-webp-optimizer.git
 
 欢迎关注微信公众号：**【求知的萝卜】**  
 第一时间获取更多极客工具、WordPress 深度调优与硬核效率干货！
+
 
