@@ -13,9 +13,7 @@ class Radish_WebP_Engine {
         $settings = $this->get_settings();
 
         if (!empty($settings['enabled']) && !empty($settings['convert_on_upload'])) {
-            // 1. 上传第一瞬间拦截优化原图（在生成缩略图前）
-            add_filter('wp_handle_upload', array($this, 'handle_upload_pre_process'), 10, 2);
-            // 2. 生成缩略图与 WebP 副本
+            // 在元数据生成阶段统一流水线处理：精准记录初始体积 -> 原图瘦身 -> 生成 WebP
             add_filter('wp_generate_attachment_metadata', array($this, 'handle_attachment_upload'), 10, 2);
         }
 
@@ -67,37 +65,7 @@ class Radish_WebP_Engine {
     }
 
     /**
-     * 阶段 0：文件刚上传落盘时，立即对原始图片进行就地瘦身
-     */
-    public function handle_upload_pre_process($upload, $context = 'upload') {
-        if (!isset($upload['file']) || !isset($upload['type'])) {
-            return $upload;
-        }
-
-        $allowed_types = array('image/jpeg', 'image/png', 'image/jpg');
-        if (!in_array($upload['type'], $allowed_types, true)) {
-            return $upload;
-        }
-
-        $settings = $this->get_settings();
-        if (empty($settings['enabled']) || empty($settings['optimize_original'])) {
-            return $upload;
-        }
-
-        $file_path = $upload['file'];
-        if (file_exists($file_path)) {
-            $orig_quality = isset($settings['orig_quality']) ? intval($settings['orig_quality']) : 82;
-            $max_dimension = isset($settings['max_dimension']) ? intval($settings['max_dimension']) : 2560;
-            $backup = !empty($settings['backup_original']);
-
-            $this->optimize_original_file($file_path, $orig_quality, $max_dimension, $backup);
-        }
-
-        return $upload;
-    }
-
-    /**
-     * 阶段 1 & 2：上传元数据生成时，处理原图/大图补漏及生成所有 WebP 副本
+     * 上传图片时统一进行流水线处理：精确记录初始大小 -> 原图瘦身 -> 生成 WebP
      */
     public function handle_attachment_upload($metadata, $attachment_id) {
         $mime_type = get_post_mime_type($attachment_id);
@@ -118,7 +86,7 @@ class Radish_WebP_Engine {
         $max_dimension = isset($settings['max_dimension']) ? intval($settings['max_dimension']) : 2560;
         $backup = !empty($settings['backup_original']);
 
-        if (isset($metadata['file'])) {
+        if (!empty($metadata['file'])) {
             $original_path = path_join($upload_dir['basedir'], $metadata['file']);
             $base_dir = dirname($original_path);
 
@@ -126,41 +94,47 @@ class Radish_WebP_Engine {
             if (!empty($metadata['original_image'])) {
                 $raw_orig_path = path_join($base_dir, $metadata['original_image']);
                 if (file_exists($raw_orig_path)) {
+                    $raw_initial_size = filesize($raw_orig_path);
+                    update_post_meta($attachment_id, '_radish_initial_size', $raw_initial_size);
+
                     if (!empty($settings['optimize_original'])) {
                         $this->optimize_original_file($raw_orig_path, $orig_quality, $max_dimension, $backup);
+                        update_post_meta($attachment_id, '_radish_optimized_orig_size', filesize($raw_orig_path));
                     }
                     $this->convert_file_to_webp($raw_orig_path, $quality);
                 }
             }
 
             if (file_exists($original_path)) {
+                // 1. 先精准记录最原始、未被压缩前的文件大小
                 $initial_size = get_post_meta($attachment_id, '_radish_initial_size', true);
                 if (!$initial_size) {
                     $initial_size = filesize($original_path);
                     update_post_meta($attachment_id, '_radish_initial_size', $initial_size);
                 }
 
-                // 原图瘦身优化
+                // 2. 阶段一：原图自身智能瘦身优化
                 if (!empty($settings['optimize_original'])) {
                     $this->optimize_original_file($original_path, $orig_quality, $max_dimension, $backup);
-                    update_post_meta($attachment_id, '_radish_optimized_orig_size', filesize($original_path));
+                    $new_orig_size = filesize($original_path);
+                    update_post_meta($attachment_id, '_radish_optimized_orig_size', $new_orig_size);
                 }
 
-                // 生成主图 WebP
+                // 3. 阶段二：生成主图 WebP 终极优化文件
                 $this->convert_file_to_webp($original_path, $quality);
             }
-        }
 
-        // 缩略图处理
-        if (!empty($metadata['sizes']) && is_array($metadata['sizes'])) {
-            foreach ($metadata['sizes'] as $size_info) {
-                if (!empty($size_info['file'])) {
-                    $thumb_path = path_join($base_dir, $size_info['file']);
-                    if (file_exists($thumb_path)) {
-                        if (!empty($settings['optimize_original'])) {
-                            $this->optimize_original_file($thumb_path, $orig_quality, 0, false);
+            // 4. 处理所有缩略图尺寸
+            if (!empty($metadata['sizes']) && is_array($metadata['sizes'])) {
+                foreach ($metadata['sizes'] as $size_info) {
+                    if (!empty($size_info['file'])) {
+                        $thumb_path = path_join($base_dir, $size_info['file']);
+                        if (file_exists($thumb_path)) {
+                            if (!empty($settings['optimize_original'])) {
+                                $this->optimize_original_file($thumb_path, $orig_quality, 0, false);
+                            }
+                            $this->convert_file_to_webp($thumb_path, $quality);
                         }
-                        $this->convert_file_to_webp($thumb_path, $quality);
                     }
                 }
             }
