@@ -305,8 +305,8 @@ jQuery(document).ready(function ($) {
         var $webpCell = $('#webp-size-' + currentId);
         $statusCell.html('<span style="color:#2271b1; font-weight:600; font-size:12px;">⏳ ' + (s.optimizing || 'Optimizing...') + '</span>');
 
-        var doOptOrig = $('#bulk_opt_orig').is(':checked') ? 1 : 0;
-        var doGenWebp = $('#bulk_gen_webp').is(':checked') ? 1 : 0;
+        var doOptOrig = ($('#modal-task-opt-orig').length ? $('#modal-task-opt-orig').is(':checked') : $('#bulk_opt_orig').is(':checked')) ? 1 : 0;
+        var doGenWebp = ($('#modal-task-gen-webp').length ? $('#modal-task-gen-webp').is(':checked') : $('#bulk_gen_webp').is(':checked')) ? 1 : 0;
 
         $.post(radishWebpData.ajaxUrl, {
             action: 'radish_webp_convert_single_attachment',
@@ -318,11 +318,11 @@ jQuery(document).ready(function ($) {
         }, function (res) {
             if (res.success) {
                 $statusCell.html('<span class="badge badge-success" style="font-size:11px;">✔ ' + (s.generated || 'Done') + '</span>');
-                if (res.data.new_orig_size) {
+                if (res.data && res.data.new_orig_size) {
                     $origCell.html('<strong>' + res.data.new_orig_size + '</strong>');
                 }
-                if (res.data.new_webp_size) {
-                    $webpCell.html('<strong style="color:#008a20;">' + res.data.new_webp_size + '</strong>');
+                if (res.data && res.data.new_webp_size) {
+                    $webpCell.html('<strong style="color:#008a20; font-weight:700;">' + res.data.new_webp_size + '</strong>');
                 }
                 $('#scan-row-' + currentId).attr('data-has-webp', '1');
             } else {
