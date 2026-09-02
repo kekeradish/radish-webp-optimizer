@@ -18,16 +18,21 @@ class Radish_WebP_Bulk_Processor {
      * 深度扫描媒体库，返回用于前端大表格勾选的完整图片清单
      */
     public function ajax_scan_detailed_media() {
-        check_ajax_referer('radish_webp_admin_nonce', 'nonce');
+        if (!check_ajax_referer('radish_webp_admin_nonce', 'nonce', false)) {
+            wp_send_json_error(array('message' => 'Security check failed (Nonce expired). Please refresh page.'));
+        }
 
-        if (!current_user_can('manage_options')) {
+        if (!current_user_can('manage_options') && !current_user_can('upload_files')) {
             wp_send_json_error(array('message' => radish_t('Permission denied')));
         }
+
+        @ini_set('memory_limit', '512M');
+        @set_time_limit(120);
 
         $query_args = array(
             'post_type'      => 'attachment',
             'post_mime_type' => array('image/jpeg', 'image/png'),
-            'post_status'    => 'inherit',
+            'post_status'    => array('inherit', 'publish', 'private'),
             'posts_per_page' => -1,
             'orderby'        => 'date',
             'order'          => 'DESC',

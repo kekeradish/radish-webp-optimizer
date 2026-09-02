@@ -132,29 +132,45 @@ jQuery(document).ready(function ($) {
     // 3. Scan Media Library
     // -------------------------------------------------------------
     function triggerScan() {
-        $loadingState.show();
-        $table.hide();
-        $tbody.empty();
-        $btnStart.prop('disabled', true);
+        var $loading = $('#modal-loading-state');
+        var $tbl = $('#radish-modal-table');
+        var $tb = $('#scanned-media-tbody');
+        var $btn = $('#btn-start-bulk');
 
-        $.post(radishWebpData.ajaxUrl, {
-            action: 'radish_webp_scan_detailed_media',
-            nonce: radishWebpData.nonce
-        }, function (res) {
-            $loadingState.hide();
-            $table.show();
+        $loading.show();
+        $tbl.hide();
+        $tb.empty();
+        if ($btn.length) $btn.prop('disabled', true);
 
-            if (res.success && res.data && res.data.items) {
-                scannedItems = res.data.items;
-                $totalCount.text(res.data.total || scannedItems.length);
-                renderTable(scannedItems);
-            } else {
-                alert((res.data && res.data.message) || s.scanFailed || 'Scan failed');
+        var ajaxUrl = (typeof radishWebpData !== 'undefined' && radishWebpData.ajaxUrl) ? radishWebpData.ajaxUrl : (window.ajaxurl || '/wp-admin/admin-ajax.php');
+        var nonce = (typeof radishWebpData !== 'undefined' && radishWebpData.nonce) ? radishWebpData.nonce : '';
+
+        $.ajax({
+            url: ajaxUrl,
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                action: 'radish_webp_scan_detailed_media',
+                nonce: nonce
+            },
+            success: function (res) {
+                $loading.hide();
+                $tbl.show();
+
+                if (res && res.success && res.data && res.data.items) {
+                    scannedItems = res.data.items;
+                    $('#total-scanned-count').text(res.data.total || scannedItems.length);
+                    renderTable(scannedItems);
+                } else {
+                    var msg = (res && res.data && res.data.message) ? res.data.message : (s.scanFailed || 'Scan failed');
+                    $tb.html('<tr><td colspan="6" style="text-align:center; padding:30px; color:#ef4444; font-size:14px;">❌ ' + msg + '</td></tr>');
+                }
+            },
+            error: function (xhr, status, err) {
+                $loading.hide();
+                $tbl.show();
+                $tb.html('<tr><td colspan="6" style="text-align:center; padding:30px; color:#ef4444; font-size:14px;">❌ Network / Server Error: ' + (xhr.status || status) + ' ' + (xhr.responseText || err || '') + '</td></tr>');
             }
-        }).fail(function () {
-            $loadingState.hide();
-            $table.show();
-            alert(s.scanFailed || 'Scan failed, please check network');
         });
     }
 
