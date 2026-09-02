@@ -115,7 +115,7 @@ git clone https://github.com/kekeradish/radish-webp-optimizer.git
 您的每一份支持，都是激励作者持续开源维护与迭代新特性的最大动力 ❤️！
 
 <p align="center">
-  <img src="assets/sponsor.jpg" width="240" alt="微信赞赏码" style="border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.12);" />
+  <img src="assets/sponsor.png" width="240" alt="求知的萝卜 微信赞赏码" style="border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.12);" />
 </p>
 
 ---
