@@ -28,7 +28,7 @@ class Radish_WebP_Admin {
     }
 
     public function add_action_links($links) {
-        $settings_link = '<a href="' . admin_url('admin.php?page=radish-webp-settings') . '">' . __('Settings', 'webp-radish-webp-optimizer') . '</a>';
+        $settings_link = '<a href="' . admin_url('admin.php?page=radish-webp-settings') . '">' . radish_t('Settings') . '</a>';
         array_unshift($links, $settings_link);
         return $links;
     }
@@ -36,8 +36,8 @@ class Radish_WebP_Admin {
     public function register_admin_menu() {
         // 1. 在 WordPress 左侧主菜单栏注册独立的一级顶级菜单（位于【设置】下方、底部独立插件专区）
         add_menu_page(
-            __('🥕 Radish WebP', 'webp-radish-webp-optimizer'),
-            __('🥕 Radish WebP', 'webp-radish-webp-optimizer'),
+            radish_t('🥕 Radish WebP'),
+            radish_t('🥕 Radish WebP'),
             'manage_options',
             'radish-webp-settings',
             array($this, 'render_admin_page'),
@@ -48,8 +48,8 @@ class Radish_WebP_Admin {
         // 2. 注册左侧二级菜单（设置面板）
         add_submenu_page(
             'radish-webp-settings',
-            __('Settings & Dashboard', 'webp-radish-webp-optimizer'),
-            __('Settings & Dashboard', 'webp-radish-webp-optimizer'),
+            radish_t('Settings & Dashboard'),
+            radish_t('Settings & Dashboard'),
             'manage_options',
             'radish-webp-settings',
             array($this, 'render_admin_page')
@@ -57,8 +57,8 @@ class Radish_WebP_Admin {
 
         // 3. 同时在常规【设置】中保留快捷入口
         add_options_page(
-            __('🥕 Radish WebP Optimizer', 'webp-radish-webp-optimizer'),
-            __('🥕 Radish WebP Optimizer', 'webp-radish-webp-optimizer'),
+            radish_t('🥕 Radish WebP Optimizer'),
+            radish_t('🥕 Radish WebP Optimizer'),
             'manage_options',
             'radish-webp-settings-alt',
             array($this, 'render_admin_page')
@@ -94,7 +94,7 @@ class Radish_WebP_Admin {
     }
 
     public function add_media_columns($columns) {
-        $columns['radish_webp_status'] = __('Dual Optimization & Actions', 'webp-radish-webp-optimizer');
+        $columns['radish_webp_status'] = radish_t('Dual Optimization & Actions');
         return $columns;
     }
 
@@ -103,31 +103,24 @@ class Radish_WebP_Admin {
             return;
         }
 
-        $mime = get_post_mime_type($post_id);
-        if (!in_array($mime, array('image/jpeg', 'image/png', 'image/jpg'), true)) {
-            echo '<span style="color:#a7aaad;">—</span>';
-            return;
-        }
-
         $meta = wp_get_attachment_metadata($post_id);
         if (empty($meta) || empty($meta['file'])) {
-            echo '<span style="color:#d63638;">' . esc_html__('No metadata', 'webp-radish-webp-optimizer') . '</span>';
+            echo '<span style="color:#999;">' . radish_esc_html_t('No metadata') . '</span>';
             return;
         }
 
         $upload_dir = wp_upload_dir();
         $orig_path = path_join($upload_dir['basedir'], $meta['file']);
-        $webp_path = preg_replace('/\.(jpe?g|png)$/i', '.webp', $orig_path);
-        $bak_path  = $orig_path . '.radish_bak';
-
         if (!file_exists($orig_path)) {
-            echo '<span style="color:#a7aaad;">' . esc_html__('File missing', 'webp-radish-webp-optimizer') . '</span>';
+            echo '<span style="color:#d63638;">' . radish_esc_html_t('File missing') . '</span>';
             return;
         }
 
+        $webp_path = preg_replace('/\.(jpe?g|png)$/i', '.webp', $orig_path);
+        $bak_path  = $orig_path . '.radish_bak';
+
         $initial_size = get_post_meta($post_id, '_radish_initial_size', true);
         $current_orig_size = filesize($orig_path);
-
         if (!$initial_size || $initial_size < $current_orig_size) {
             $initial_size = $current_orig_size;
         }
@@ -136,16 +129,16 @@ class Radish_WebP_Admin {
         $webp_size = $has_webp ? filesize($webp_path) : 0;
         $has_bak  = file_exists($bak_path);
 
-        echo '<div id="radish-row-' . esc_attr($post_id) . '" class="radish-media-status-cell" style="font-size:12px; line-height:1.4;">';
+        echo '<div class="radish-media-col" id="radish-col-' . esc_attr($post_id) . '" style="font-size:12px; line-height:1.4;">';
 
         // 1. 原图阶段数据
         $orig_saved = $initial_size - $current_orig_size;
         $orig_saved_pct = $initial_size > 0 ? round(($orig_saved / $initial_size) * 100) : 0;
-        
-        echo '<div style="margin-bottom:4px; padding:2px 5px; background:#f6f7f7; border-radius:3px;">';
-        echo esc_html__('① Original:', 'webp-radish-webp-optimizer') . ' <strong>' . size_format($current_orig_size, 1) . '</strong>';
+
+        echo '<div style="margin-bottom:4px; padding:2px 5px; background:#f0f6fc; border-radius:3px; border-left:2px solid #2271b1;">';
+        echo radish_esc_html_t('① Original:') . ' <strong>' . size_format($current_orig_size, 1) . '</strong>';
         if ($orig_saved_pct > 0) {
-            echo ' <span style="color:#2271b1; font-weight:600;">(-' . $orig_saved_pct . '%)</span>';
+            echo ' <span style="color:#2271b1; font-weight:700;">(-' . $orig_saved_pct . '%)</span>';
         }
         echo '</div>';
 
@@ -155,17 +148,17 @@ class Radish_WebP_Admin {
             $total_saved_pct = $initial_size > 0 ? round(($total_saved / $initial_size) * 100) : 0;
 
             echo '<div style="margin-bottom:6px; padding:2px 5px; background:#e7f7ed; border-radius:3px; border-left:2px solid #008a20;">';
-            echo esc_html__('② WebP:', 'webp-radish-webp-optimizer') . ' <strong style="color:#008a20;">' . size_format($webp_size, 1) . '</strong> <span style="color:#008a20; font-weight:700;">(-' . $total_saved_pct . '%)</span>';
+            echo radish_esc_html_t('② WebP:') . ' <strong style="color:#008a20;">' . size_format($webp_size, 1) . '</strong> <span style="color:#008a20; font-weight:700;">(-' . $total_saved_pct . '%)</span>';
             echo '</div>';
         } else {
-            echo '<div style="margin-bottom:6px; color:#d63638;">' . esc_html__('② WebP: Not generated', 'webp-radish-webp-optimizer') . '</div>';
+            echo '<div style="margin-bottom:6px; color:#d63638;">' . radish_esc_html_t('② WebP: Not generated') . '</div>';
         }
 
         // 3. 单图快捷操作按钮区
         echo '<div class="radish-action-links" style="display:flex; gap:6px; flex-wrap:wrap;">';
-        echo '<button type="button" class="button button-small btn-radish-single-opt" data-id="' . esc_attr($post_id) . '" title="' . esc_attr__('Optimize original image and generate WebP', 'webp-radish-webp-optimizer') . '">⚡ ' . esc_html__('Optimize', 'webp-radish-webp-optimizer') . '</button>';
+        echo '<button type="button" class="button button-small btn-radish-single-opt" data-id="' . esc_attr($post_id) . '" title="' . esc_attr(radish_t('Optimize original image and generate WebP')) . '">⚡ ' . radish_esc_html_t('Optimize') . '</button>';
         if ($has_bak) {
-            echo '<button type="button" class="button button-small btn-radish-single-restore" data-id="' . esc_attr($post_id) . '" title="' . esc_attr__('Restore initial uncompressed original image', 'webp-radish-webp-optimizer') . '" style="color:#8c5b00;">↩️ ' . esc_html__('Restore', 'webp-radish-webp-optimizer') . '</button>';
+            echo '<button type="button" class="button button-small btn-radish-single-restore" data-id="' . esc_attr($post_id) . '" title="' . esc_attr(radish_t('Restore initial uncompressed original image')) . '" style="color:#8c5b00;">↩️ ' . radish_esc_html_t('Restore') . '</button>';
         }
         echo '</div>';
 
@@ -199,32 +192,32 @@ class Radish_WebP_Admin {
         $has_bak  = file_exists($bak_path);
 
         $html = '<div id="radish-detail-' . esc_attr($post->ID) . '" style="padding:14px; background:#f6f7f7; border-radius:8px; border:1px solid #dcdcde;">';
-        $html .= '<p style="margin:0 0 6px 0;"><strong>' . esc_html__('Initial Upload Size:', 'webp-radish-webp-optimizer') . '</strong> ' . size_format($initial_size, 2) . '</p>';
+        $html .= '<p style="margin:0 0 6px 0;"><strong>' . radish_esc_html_t('Initial Upload Size:') . '</strong> ' . size_format($initial_size, 2) . '</p>';
         
         $orig_saved = $initial_size - $current_orig_size;
         $orig_saved_pct = $initial_size > 0 ? round(($orig_saved / $initial_size) * 100) : 0;
-        $html .= '<p style="margin:0 0 6px 0;"><strong>' . esc_html__('① Optimized Original Size:', 'webp-radish-webp-optimizer') . '</strong> ' . size_format($current_orig_size, 2) . ($orig_saved_pct > 0 ? ' <span style="color:#2271b1; font-weight:600;">(-' . $orig_saved_pct . '%)</span>' : '') . '</p>';
+        $html .= '<p style="margin:0 0 6px 0;"><strong>' . radish_esc_html_t('① Optimized Original Size:') . '</strong> ' . size_format($current_orig_size, 2) . ($orig_saved_pct > 0 ? ' <span style="color:#2271b1; font-weight:600;">(-' . $orig_saved_pct . '%)</span>' : '') . '</p>';
 
         if ($has_webp) {
             $total_saved = $initial_size - $webp_size;
             $total_saved_pct = $initial_size > 0 ? round(($total_saved / $initial_size) * 100) : 0;
-            $html .= '<p style="margin:0 0 8px 0;"><strong>' . esc_html__('② WebP Image Size:', 'webp-radish-webp-optimizer') . '</strong> <span style="color:#008a20; font-weight:700; font-size:14px;">' . size_format($webp_size, 2) . '</span></p>';
-            $html .= '<p style="margin:0 0 12px 0; padding:4px 8px; background:#e7f7ed; border-radius:4px; color:#008a20; font-weight:700;">🎉 ' . esc_html__('Total Savings:', 'webp-radish-webp-optimizer') . ' ' . size_format($total_saved, 2) . ' (' . $total_saved_pct . '%)</p>';
+            $html .= '<p style="margin:0 0 8px 0;"><strong>' . radish_esc_html_t('② WebP Image Size:') . '</strong> <span style="color:#008a20; font-weight:700; font-size:14px;">' . size_format($webp_size, 2) . '</span></p>';
+            $html .= '<p style="margin:0 0 12px 0; padding:4px 8px; background:#e7f7ed; border-radius:4px; color:#008a20; font-weight:700;">🎉 ' . radish_esc_html_t('Total Savings:') . ' ' . size_format($total_saved, 2) . ' (' . $total_saved_pct . '%)</p>';
         } else {
-            $html .= '<p style="margin:0 0 12px 0; color:#d63638;"><strong>' . esc_html__('② WebP Status:', 'webp-radish-webp-optimizer') . '</strong> ' . esc_html__('WebP copy has not been generated yet', 'webp-radish-webp-optimizer') . '</p>';
+            $html .= '<p style="margin:0 0 12px 0; color:#d63638;"><strong>' . radish_esc_html_t('② WebP Status:') . '</strong> ' . radish_esc_html_t('WebP copy has not been generated yet') . '</p>';
         }
 
         $html .= '<div style="display:flex; gap:8px;">';
-        $html .= '<button type="button" class="button button-primary btn-radish-single-opt" data-id="' . esc_attr($post->ID) . '">⚡ ' . esc_html__('Re-optimize Original + WebP', 'webp-radish-webp-optimizer') . '</button>';
+        $html .= '<button type="button" class="button button-primary btn-radish-single-opt" data-id="' . esc_attr($post->ID) . '">⚡ ' . radish_esc_html_t('Re-optimize Original + WebP') . '</button>';
         if ($has_bak) {
-            $html .= '<button type="button" class="button btn-radish-single-restore" data-id="' . esc_attr($post->ID) . '">↩️ ' . esc_html__('Restore Initial Image', 'webp-radish-webp-optimizer') . '</button>';
+            $html .= '<button type="button" class="button btn-radish-single-restore" data-id="' . esc_attr($post->ID) . '">↩️ ' . radish_esc_html_t('Restore Initial Image') . '</button>';
         }
         $html .= '</div>';
 
         $html .= '</div>';
 
         $form_fields['radish_webp_info'] = array(
-            'label' => __('Optimization Info & Actions', 'webp-radish-webp-optimizer'),
+            'label' => radish_t('Optimization Info & Actions'),
             'input' => 'html',
             'html'  => $html,
         );
@@ -235,46 +228,51 @@ class Radish_WebP_Admin {
     public function ajax_optimize_single_action() {
         check_ajax_referer('radish_webp_admin_nonce', 'nonce');
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(array('message' => __('Permission denied', 'webp-radish-webp-optimizer')));
+            wp_send_json_error(array('message' => radish_t('Permission denied')));
         }
 
         $attachment_id = isset($_POST['attachment_id']) ? intval($_POST['attachment_id']) : 0;
         if (!$attachment_id) {
-            wp_send_json_error(array('message' => __('Invalid attachment ID', 'webp-radish-webp-optimizer')));
+            wp_send_json_error(array('message' => radish_t('Invalid attachment ID')));
         }
 
         $engine = new Radish_WebP_Engine();
         $res = $engine->optimize_single_attachment($attachment_id);
 
         if ($res) {
-            wp_send_json_success(array('message' => __('Optimized successfully!', 'webp-radish-webp-optimizer')));
+            wp_send_json_success(array('message' => radish_t('Optimized successfully!')));
         } else {
-            wp_send_json_error(array('message' => __('Optimization failed or original image missing', 'webp-radish-webp-optimizer')));
+            wp_send_json_error(array('message' => radish_t('Optimization failed or original image missing')));
         }
     }
 
     public function ajax_restore_single_action() {
         check_ajax_referer('radish_webp_admin_nonce', 'nonce');
         if (!current_user_can('edit_posts')) {
-            wp_send_json_error(array('message' => __('Permission denied', 'webp-radish-webp-optimizer')));
+            wp_send_json_error(array('message' => radish_t('Permission denied')));
         }
 
         $attachment_id = isset($_POST['attachment_id']) ? intval($_POST['attachment_id']) : 0;
         if (!$attachment_id) {
-            wp_send_json_error(array('message' => __('Invalid attachment ID', 'webp-radish-webp-optimizer')));
+            wp_send_json_error(array('message' => radish_t('Invalid attachment ID')));
         }
 
         $engine = new Radish_WebP_Engine();
         $res = $engine->restore_original_file($attachment_id);
 
         if ($res) {
-            wp_send_json_success(array('message' => __('Restored initial original file successfully!', 'webp-radish-webp-optimizer')));
+            wp_send_json_success(array('message' => radish_t('Restored initial original file successfully!')));
         } else {
-            wp_send_json_error(array('message' => __('No backup file found for this image', 'webp-radish-webp-optimizer')));
+            wp_send_json_error(array('message' => radish_t('No backup file found for this image')));
         }
     }
 
     public function enqueue_admin_assets($hook) {
+        $allowed_pages = array('toplevel_page_radish-webp-settings', 'settings_page_radish-webp-settings', 'settings_page_radish-webp-settings-alt', 'upload.php', 'post.php');
+        if (!in_array($hook, $allowed_pages, true)) {
+            return;
+        }
+
         wp_enqueue_style('radish-webp-admin-css', RADISH_WEBP_URL . 'assets/admin.css', array(), RADISH_WEBP_VERSION);
         wp_enqueue_script('radish-webp-admin-js', RADISH_WEBP_URL . 'assets/admin.js', array('jquery'), RADISH_WEBP_VERSION, true);
 
@@ -282,27 +280,26 @@ class Radish_WebP_Admin {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce'   => wp_create_nonce('radish_webp_admin_nonce'),
             'strings' => array(
-                'start'           => __('Start Bulk Optimization', 'webp-radish-webp-optimizer'),
-                'processing'      => __('Optimizing...', 'webp-radish-webp-optimizer'),
-                'completed'       => __('🎉 All selected images have been optimized successfully!', 'webp-radish-webp-optimizer'),
-                'error'           => __('An error occurred during operation', 'webp-radish-webp-optimizer'),
-                'optimizing'      => __('Optimizing...', 'webp-radish-webp-optimizer'),
-                'restoring'       => __('Restoring...', 'webp-radish-webp-optimizer'),
-                'restoreSuccess'  => __('✔ Restored successfully', 'webp-radish-webp-optimizer'),
-                'optimizeSuccess' => __('✔ Optimized successfully', 'webp-radish-webp-optimizer'),
-                'confirmRestore'  => __('Are you sure you want to restore the initial uncompressed original file?', 'webp-radish-webp-optimizer'),
-                'noSelected'      => __('Please select at least one image!', 'webp-radish-webp-optimizer'),
-                'noOptionSelected'=> __('Please select at least one action (Optimize Original or Generate WebP)!', 'webp-radish-webp-optimizer'),
-                'scanning'        => __('Scanning media library images, please wait...', 'webp-radish-webp-optimizer'),
-                'noImages'        => __('No JPG/PNG images found in media library', 'webp-radish-webp-optimizer'),
-                'generated'       => __('🟢 Generated', 'webp-radish-webp-optimizer'),
-                'notGenerated'    => __('⚪ Not Generated', 'webp-radish-webp-optimizer'),
-                'scanFailed'      => __('Scan failed, please check network connection', 'webp-radish-webp-optimizer'),
-                'previewTitle'    => __('Image Preview', 'webp-radish-webp-optimizer'),
-                'previewHover'    => __('🔍 Click to view large image preview', 'webp-radish-webp-optimizer'),
-                'uploadDate'      => __('Upload date:', 'webp-radish-webp-optimizer'),
-                'processingBatch' => __('Processing item %1$d of %2$d (ID: %3$d)...', 'webp-radish-webp-optimizer'),
-                'reOptimizeBtn'   => __('Re-optimize selected images', 'webp-radish-webp-optimizer'),
+                'start'           => radish_t('Start Bulk Optimization'),
+                'processing'      => radish_t('Optimizing...'),
+                'completed'       => radish_t('Bulk Process Finished'),
+                'error'           => radish_t('Optimization failed or original image missing'),
+                'optimizing'      => radish_t('Optimizing...'),
+                'restoring'       => radish_t('Restoring...'),
+                'restoreSuccess'  => radish_t('Restored initial original file successfully!'),
+                'optimizeSuccess' => radish_t('Optimized successfully!'),
+                'confirmRestore'  => radish_t('Restore initial uncompressed original image'),
+                'noSelected'      => radish_t('Please select at least one image to optimize.'),
+                'noOptionSelected'=> radish_t('Please select at least one task (Slim Original or Generate WebP).'),
+                'scanning'        => radish_t('Scan and filter all media library images in an independent large modal dialog with large preview, selection, and dual-optimization.'),
+                'noImages'        => radish_t('No JPG/PNG images found in media library'),
+                'generated'       => radish_t('Completed'),
+                'notGenerated'    => radish_t('② WebP: Not generated'),
+                'scanFailed'      => radish_t('Scan failed, please check network connection'),
+                'previewTitle'    => radish_t('Image Preview'),
+                'previewHover'    => radish_t('Lightbox Large Preview'),
+                'uploadDate'      => radish_t('File Name / Upload Date'),
+                'reOptimizeBtn'   => radish_t('Re-optimize Original + WebP'),
             )
         ));
     }
@@ -332,29 +329,29 @@ class Radish_WebP_Admin {
                     <span class="radish-brand-logo">🥕</span>
                     <div class="radish-brand-info">
                         <h1>
-                            <?php echo esc_html__('Radish WebP Optimizer', 'webp-radish-webp-optimizer'); ?>
+                            <?php echo radish_esc_html_t('Radish WebP Optimizer'); ?>
                             <span class="radish-version-tag">v<?php echo RADISH_WEBP_VERSION; ?></span>
                         </h1>
-                        <p><?php echo esc_html__('Dual-stage optimization architecture for massive server storage savings and lightning-fast WebP loading.', 'webp-radish-webp-optimizer'); ?></p>
+                        <p><?php echo radish_esc_html_t('Dual-stage optimization architecture for massive server storage savings and lightning-fast WebP loading.'); ?></p>
                     </div>
                 </div>
 
                 <div class="radish-header-meta">
                     <div class="radish-meta-pill">
-                        <span>PHP:</span> <strong><?php echo PHP_VERSION; ?></strong>
+                        <span><?php echo radish_esc_html_t('PHP Version:'); ?></span> <strong><?php echo PHP_VERSION; ?></strong>
                     </div>
                     <div class="radish-meta-pill">
-                        <span>Driver:</span> 
+                        <span><?php echo radish_esc_html_t('Driver:'); ?></span> 
                         <?php if ($driver === 'imagick'): ?>
                             <strong style="color:#34d399;">ImageMagick</strong>
                         <?php elseif ($driver === 'gd'): ?>
                             <strong style="color:#60a5fa;">PHP GD</strong>
                         <?php else: ?>
-                            <strong style="color:#f87171;">None</strong>
+                            <strong style="color:#f87171;"><?php echo radish_esc_html_t('None'); ?></strong>
                         <?php endif; ?>
                     </div>
                     <div class="radish-meta-pill" style="border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.15); color: #34d399;">
-                        ● <strong><?php echo esc_html__('Engine Active', 'webp-radish-webp-optimizer'); ?></strong>
+                        ● <strong><?php echo radish_esc_html_t('Engine Active'); ?></strong>
                     </div>
                 </div>
             </div>
@@ -362,17 +359,17 @@ class Radish_WebP_Admin {
             <!-- 1. 核心大工作台醒目 Banner -->
             <div class="radish-workbench-hero">
                 <div class="radish-workbench-left">
-                    <h2>🚀 <?php echo esc_html__('Bulk Optimization Workbench', 'webp-radish-webp-optimizer'); ?></h2>
-                    <p><?php echo esc_html__('Scan and filter all media library images in an independent large modal dialog with large preview, selection, and dual-optimization.', 'webp-radish-webp-optimizer'); ?></p>
+                    <h2>🚀 <?php echo radish_esc_html_t('Bulk Optimization Workbench'); ?></h2>
+                    <p><?php echo radish_esc_html_t('Scan and filter all media library images in an independent large modal dialog with large preview, selection, and dual-optimization.'); ?></p>
                     <div class="radish-workbench-badges">
-                        <span>✨ <?php echo esc_html__('No Horizontal Scroll', 'webp-radish-webp-optimizer'); ?></span>
-                        <span>🔍 <?php echo esc_html__('Lightbox Large Preview', 'webp-radish-webp-optimizer'); ?></span>
-                        <span>🎯 <?php echo esc_html__('Batch Selection', 'webp-radish-webp-optimizer'); ?></span>
+                        <span>✨ <?php echo radish_esc_html_t('No Horizontal Scroll'); ?></span>
+                        <span>🔍 <?php echo radish_esc_html_t('Lightbox Large Preview'); ?></span>
+                        <span>🎯 <?php echo radish_esc_html_t('Batch Selection'); ?></span>
                     </div>
                 </div>
                 <div class="radish-workbench-right">
                     <button id="btn-open-modal" type="button" class="button button-primary button-hero" style="height:44px; line-height:42px; font-size:14px; padding:0 24px !important; border-radius:10px;">
-                        🔍 <?php echo esc_html__('Open Bulk Optimization Workbench', 'webp-radish-webp-optimizer'); ?>
+                        🔍 <?php echo radish_esc_html_t('Open Bulk Optimization Workbench'); ?>
                     </button>
                 </div>
             </div>
@@ -383,26 +380,26 @@ class Radish_WebP_Admin {
 
                 <!-- 卡片 1：基础自动化与语言 -->
                 <div class="visil-card">
-                    <h2>⚙️ <?php echo esc_html__('Core Optimization Settings', 'webp-radish-webp-optimizer'); ?></h2>
+                    <h2>⚙️ <?php echo radish_esc_html_t('Core Optimization Settings'); ?></h2>
                     
                     <div class="radish-form-row">
                         <div class="radish-form-label">
-                            <strong><?php echo esc_html__('Interface Language', 'webp-radish-webp-optimizer'); ?></strong>
-                            <p class="description"><?php echo esc_html__('Select the display language for the plugin settings and batch workbench.', 'webp-radish-webp-optimizer'); ?></p>
+                            <strong><?php echo radish_esc_html_t('Interface Language'); ?></strong>
+                            <p class="description"><?php echo radish_esc_html_t('Select the display language for the plugin settings and batch workbench.'); ?></p>
                         </div>
                         <div class="radish-form-control">
                             <select name="radish_webp_settings[plugin_lang]" style="min-width: 180px; border-radius: 8px; font-size:13px;">
-                                <option value="auto" <?php selected('auto', isset($settings['plugin_lang']) ? $settings['plugin_lang'] : 'auto'); ?>><?php echo esc_html__('Auto (Follow Site Language)', 'webp-radish-webp-optimizer'); ?></option>
-                                <option value="zh_CN" <?php selected('zh_CN', isset($settings['plugin_lang']) ? $settings['plugin_lang'] : 'auto'); ?>><?php echo esc_html__('Simplified Chinese', 'webp-radish-webp-optimizer'); ?> (zh_CN)</option>
-                                <option value="en_US" <?php selected('en_US', isset($settings['plugin_lang']) ? $settings['plugin_lang'] : 'auto'); ?>><?php echo esc_html__('English', 'webp-radish-webp-optimizer'); ?> (en_US)</option>
+                                <option value="auto" <?php selected('auto', isset($settings['plugin_lang']) ? $settings['plugin_lang'] : 'auto'); ?>><?php echo radish_esc_html_t('Auto (Follow Site Language)'); ?></option>
+                                <option value="zh_CN" <?php selected('zh_CN', isset($settings['plugin_lang']) ? $settings['plugin_lang'] : 'auto'); ?>>🇨🇳 <?php echo radish_esc_html_t('Simplified Chinese'); ?> (zh_CN)</option>
+                                <option value="en_US" <?php selected('en_US', isset($settings['plugin_lang']) ? $settings['plugin_lang'] : 'auto'); ?>>🇺🇸 <?php echo radish_esc_html_t('English'); ?> (en_US)</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="radish-form-row">
                         <div class="radish-form-label">
-                            <strong><?php echo esc_html__('Enable Plugin Features', 'webp-radish-webp-optimizer'); ?></strong>
-                            <p class="description"><?php echo esc_html__('Master switch. Disabling stops frontend replacement and automatic conversion.', 'webp-radish-webp-optimizer'); ?></p>
+                            <strong><?php echo radish_esc_html_t('Enable Plugin Features'); ?></strong>
+                            <p class="description"><?php echo radish_esc_html_t('Master switch. Disabling stops frontend replacement and automatic conversion.'); ?></p>
                         </div>
                         <div class="radish-form-control">
                             <label class="switch">
@@ -414,8 +411,8 @@ class Radish_WebP_Admin {
 
                     <div class="radish-form-row">
                         <div class="radish-form-label">
-                            <strong><?php echo esc_html__('Auto Convert on Upload', 'webp-radish-webp-optimizer'); ?></strong>
-                            <p class="description"><?php echo esc_html__('Automatically optimize original images and generate WebP files upon uploading new JPG/PNG.', 'webp-radish-webp-optimizer'); ?></p>
+                            <strong><?php echo radish_esc_html_t('Auto Convert on Upload'); ?></strong>
+                            <p class="description"><?php echo radish_esc_html_t('Automatically optimize original images and generate WebP files upon uploading new JPG/PNG.'); ?></p>
                         </div>
                         <div class="radish-form-control">
                             <label class="switch">
@@ -428,12 +425,12 @@ class Radish_WebP_Admin {
 
                 <!-- 卡片 2：原图智能脱水瘦身 -->
                 <div class="visil-card">
-                    <h2>① <?php echo esc_html__('Original Slimming', 'webp-radish-webp-optimizer'); ?></h2>
+                    <h2>① <?php echo radish_esc_html_t('Original Slimming & Safe Backup'); ?></h2>
                     
                     <div class="radish-form-row">
                         <div class="radish-form-label">
-                            <strong><?php echo esc_html__('Enable Original Image Slimming Optimization', 'webp-radish-webp-optimizer'); ?></strong>
-                            <p class="description"><?php echo esc_html__('Strip EXIF metadata and perform smart color quantization on JPG/PNG originals to drastically save server disk space!', 'webp-radish-webp-optimizer'); ?></p>
+                            <strong><?php echo radish_esc_html_t('Enable Original Image Slimming Optimization'); ?></strong>
+                            <p class="description"><?php echo radish_esc_html_t('Strip EXIF metadata and perform smart color quantization on JPG/PNG originals to drastically save server disk space!'); ?></p>
                         </div>
                         <div class="radish-form-control">
                             <label class="switch">
@@ -445,8 +442,8 @@ class Radish_WebP_Admin {
 
                     <div class="radish-form-row">
                         <div class="radish-form-label">
-                            <strong><?php echo esc_html__('Keep Initial Master Backup (.radish_bak)', 'webp-radish-webp-optimizer'); ?></strong>
-                            <p class="description"><?php echo esc_html__('Preserve a .radish_bak backup before slimming. Enables one-click restoration in Media Library anytime.', 'webp-radish-webp-optimizer'); ?></p>
+                            <strong><?php echo radish_esc_html_t('Keep Initial Master Backup (.radish_bak)'); ?></strong>
+                            <p class="description"><?php echo radish_esc_html_t('Preserve a .radish_bak backup before slimming. Enables one-click restoration in Media Library anytime.'); ?></p>
                         </div>
                         <div class="radish-form-control">
                             <label class="switch">
@@ -458,13 +455,13 @@ class Radish_WebP_Admin {
 
                     <div class="radish-sub-box" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
                         <div>
-                            <label style="font-weight:600; font-size:13px; color:#334155;"><?php echo esc_html__('Original Image Quality:', 'webp-radish-webp-optimizer'); ?></label>
+                            <label style="font-weight:600; font-size:13px; color:#334155;"><?php echo radish_esc_html_t('Original Image Quality:'); ?></label>
                             <input type="number" name="radish_webp_settings[orig_quality]" min="50" max="100" value="<?php echo esc_attr(isset($settings['orig_quality']) ? $settings['orig_quality'] : 82); ?>" style="width:70px; border-radius:6px; margin-left:6px;"> %
-                            <span class="description" style="margin-left:6px;"><?php echo esc_html__('(Recommended: 82% ~ 85% for high visual fidelity)', 'webp-radish-webp-optimizer'); ?></span>
+                            <span class="description" style="margin-left:6px;"><?php echo radish_esc_html_t('(Recommended: 82% ~ 85% for high visual fidelity)'); ?></span>
                         </div>
 
                         <div>
-                            <label style="font-weight:600; font-size:13px; color:#334155;"><?php echo esc_html__('Max Original Resolution Dimension:', 'webp-radish-webp-optimizer'); ?></label>
+                            <label style="font-weight:600; font-size:13px; color:#334155;"><?php echo radish_esc_html_t('Max Original Resolution Dimension:'); ?></label>
                             <input type="number" name="radish_webp_settings[max_dimension]" min="0" step="100" value="<?php echo esc_attr(isset($settings['max_dimension']) ? $settings['max_dimension'] : 2560); ?>" style="width:90px; border-radius:6px; margin-left:6px;"> px
                         </div>
                     </div>
@@ -472,12 +469,12 @@ class Radish_WebP_Admin {
 
                 <!-- 卡片 3：WebP 终极优化与交付 -->
                 <div class="visil-card">
-                    <h2>② <?php echo esc_html__('WebP Conversion Quality', 'webp-radish-webp-optimizer'); ?></h2>
+                    <h2>② <?php echo radish_esc_html_t('WebP Conversion Quality'); ?></h2>
                     
                     <div class="radish-form-row" style="padding-bottom:16px;">
                         <div class="radish-form-label">
-                            <strong><?php echo esc_html__('WebP Conversion Quality', 'webp-radish-webp-optimizer'); ?></strong>
-                            <p class="description"><?php echo esc_html__('WebP quality delivered to website visitors. Recommended: 75% ~ 82% (sweet spot for size & quality).', 'webp-radish-webp-optimizer'); ?></p>
+                            <strong><?php echo radish_esc_html_t('WebP Conversion Quality'); ?></strong>
+                            <p class="description"><?php echo radish_esc_html_t('WebP quality delivered to website visitors. Recommended: 75% ~ 82% (sweet spot for size & quality).'); ?></p>
                         </div>
                         <div class="radish-form-control" style="min-width:220px;">
                             <div class="range-container">
@@ -488,120 +485,116 @@ class Radish_WebP_Admin {
                     </div>
 
                     <div style="margin-top:14px; padding-top:12px; border-top:1px dashed #f1f5f9;">
-                        <strong style="display:block; font-size:13.5px; color:#1e293b; margin-bottom:10px;"><?php echo esc_html__('Frontend Delivery Mode', 'webp-radish-webp-optimizer'); ?></strong>
+                        <strong style="display:block; font-size:13.5px; color:#1e293b; margin-bottom:10px;"><?php echo radish_esc_html_t('Frontend Delivery Mode'); ?></strong>
                         <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
                             <label style="display:flex; gap:10px; padding:12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; cursor:pointer;">
                                 <input type="radio" name="radish_webp_settings[delivery_mode]" value="picture" <?php checked('picture', $settings['delivery_mode']); ?> style="margin-top:2px;">
                                 <div>
-                                    <strong style="font-size:13px; color:#0f172a;">HTML5 &lt;picture&gt; (<?php echo esc_html__('Recommended', 'webp-radish-webp-optimizer'); ?>)</strong>
-                                    <p class="description" style="margin:2px 0 0 0;"><?php echo esc_html__('Modern browsers load WebP, legacy clients automatically fallback to original images. 100% zero broken images.', 'webp-radish-webp-optimizer'); ?></p>
+                                    <strong style="font-size:13px; color:#0f172a;">HTML5 &lt;picture&gt; (<?php echo radish_esc_html_t('Recommended'); ?>)</strong>
+                                    <p class="description" style="margin:2px 0 0 0;"><?php echo radish_esc_html_t('Modern browsers load WebP, legacy clients automatically fallback to original images. 100% zero broken images.'); ?></p>
                                 </div>
                             </label>
 
                             <label style="display:flex; gap:10px; padding:12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; cursor:pointer;">
                                 <input type="radio" name="radish_webp_settings[delivery_mode]" value="replace" <?php checked('replace', $settings['delivery_mode']); ?> style="margin-top:2px;">
                                 <div>
-                                    <strong style="font-size:13px; color:#0f172a;"><?php echo esc_html__('Direct URL Replacement Mode', 'webp-radish-webp-optimizer'); ?></strong>
-                                    <p class="description" style="margin:2px 0 0 0;"><?php echo esc_html__('Directly replaces <img src="..."> image URLs with .webp URLs.', 'webp-radish-webp-optimizer'); ?></p>
+                                    <strong style="font-size:13px; color:#0f172a;"><?php echo radish_esc_html_t('Direct URL Replacement Mode'); ?></strong>
+                                    <p class="description" style="margin:2px 0 0 0;"><?php echo radish_esc_html_t('Directly replaces <img src="..."> image URLs with .webp URLs.'); ?></p>
                                 </div>
                             </label>
                         </div>
                     </div>
 
                     <div style="margin-top:20px; padding-top:16px; border-top:1px solid #f1f5f9; display:flex; justify-content:flex-end;">
-                        <?php submit_button(__('Save Changes', 'webp-radish-webp-optimizer'), 'primary', 'submit', false, array('style' => 'font-size:14px; padding:8px 36px; height:auto; border-radius:8px;')); ?>
+                        <?php submit_button(radish_t('Save Changes'), 'primary', 'submit', false, array('style' => 'font-size:14px; padding:8px 36px; height:auto; border-radius:8px;')); ?>
                     </div>
                 </div>
             </form>
         </div>
 
-        <!-- ================= 全新宽屏大模态弹窗 (Modal) ================= -->
+        <!-- 3. 全屏独立大模态弹窗工作台 -->
         <div id="radish-bulk-modal" class="visil-modal-overlay">
             <div class="visil-modal-container">
-                <!-- 弹窗 Header -->
                 <div class="visil-modal-header">
-                    <h2>🥕 <?php echo esc_html__('Radish WebP Optimizer — Bulk Workbench', 'webp-radish-webp-optimizer'); ?></h2>
-                    <button type="button" class="visil-modal-close" id="btn-close-modal" title="<?php echo esc_attr__('Close (ESC)', 'webp-radish-webp-optimizer'); ?>">&times;</button>
+                    <h2>🚀 <?php echo radish_esc_html_t('Bulk Optimization Workbench'); ?></h2>
+                    <button id="btn-close-modal" type="button" class="visil-modal-close" title="<?php echo esc_attr(radish_t('Close (ESC)')); ?>">&times;</button>
                 </div>
 
-                <!-- 弹窗 Toolbar 工具栏 -->
                 <div class="visil-modal-toolbar">
                     <div class="visil-toolbar-left">
-                        <span style="font-weight:600; color:#1d2327;">🛠️ <?php echo esc_html__('Actions:', 'webp-radish-webp-optimizer'); ?></span>
-                        <label style="cursor:pointer;">
-                            <input type="checkbox" id="bulk_opt_orig" value="1" checked> 
-                            <strong>① <?php echo esc_html__('Original Slimming', 'webp-radish-webp-optimizer'); ?></strong>
-                        </label>
-                        <label style="cursor:pointer;">
-                            <input type="checkbox" id="bulk_gen_webp" value="1" checked> 
-                            <strong>② <?php echo esc_html__('Generate WebP', 'webp-radish-webp-optimizer'); ?></strong>
-                        </label>
+                        <div class="visil-task-options" style="display:flex; align-items:center; gap:14px;">
+                            <span style="font-weight:700; font-size:13px; color:#1e293b;"><?php echo radish_esc_html_t('Actions:'); ?></span>
+                            <label style="display:inline-flex; align-items:center; gap:6px; cursor:pointer; font-weight:600; font-size:13px; color:#2563eb;">
+                                <input type="checkbox" id="modal-task-opt-orig" value="1" checked>
+                                <?php echo radish_esc_html_t('Slim Original'); ?>
+                            </label>
+                            <label style="display:inline-flex; align-items:center; gap:6px; cursor:pointer; font-weight:600; font-size:13px; color:#10b981;">
+                                <input type="checkbox" id="modal-task-gen-webp" value="1" checked>
+                                <?php echo radish_esc_html_t('Generate WebP'); ?>
+                            </label>
+                        </div>
                     </div>
 
                     <div class="visil-toolbar-right">
-                        <button type="button" id="btn-modal-rescan" class="button button-secondary">🔄 <?php echo esc_html__('Rescan', 'webp-radish-webp-optimizer'); ?></button>
-                        <button type="button" id="btn-select-all" class="button button-secondary"><?php echo esc_html__('Select All', 'webp-radish-webp-optimizer'); ?></button>
-                        <button type="button" id="btn-select-none" class="button button-secondary"><?php echo esc_html__('Deselect All', 'webp-radish-webp-optimizer'); ?></button>
-                        <button type="button" id="btn-select-unconverted" class="button button-secondary"><?php echo esc_html__('Unconverted Only', 'webp-radish-webp-optimizer'); ?></button>
-                        <span style="color:#50575e; font-size:14px; margin-left:8px;">
-                            <?php echo esc_html__('Selected:', 'webp-radish-webp-optimizer'); ?> <strong id="selected-count" style="color:#2271b1; font-size:16px;">0</strong> / <span id="total-scanned-count">0</span>
-                        </span>
+                        <button id="btn-modal-rescan" type="button" class="button" style="border-radius:6px; font-weight:600;"><?php echo radish_esc_html_t('Rescan'); ?></button>
+                        <button id="btn-modal-select-all" type="button" class="button button-secondary" style="border-radius:6px;"><?php echo radish_esc_html_t('Select All'); ?></button>
+                        <button id="btn-modal-deselect-all" type="button" class="button" style="border-radius:6px;"><?php echo radish_esc_html_t('Deselect All'); ?></button>
+                        <button id="btn-modal-select-unconverted" type="button" class="button button-secondary" style="border-radius:6px; font-weight:600; color:#2563eb;"><?php echo radish_esc_html_t('Unconverted Only'); ?></button>
                     </div>
                 </div>
 
-                <!-- 弹窗 Body 表格清单区 -->
                 <div class="visil-modal-body">
-                    <div id="modal-loading-state" style="display:none; text-align:center; padding:60px 20px;">
-                        <span class="spinner is-active" style="float:none; width:32px; height:32px; margin-bottom:12px;"></span>
-                        <p style="font-size:16px; color:#50575e; font-weight:600;"><?php echo esc_html__('Scanning media library images, please wait...', 'webp-radish-webp-optimizer'); ?></p>
+                    <div id="modal-loading-state" style="padding:60px; text-align:center; color:#64748b;">
+                        <span class="spinner is-active" style="float:none; margin:0 8px 0 0;"></span>
+                        <?php echo radish_esc_html_t('Scan and filter all media library images in an independent large modal dialog with large preview, selection, and dual-optimization.'); ?>
                     </div>
 
-                    <table id="radish-modal-table" class="visil-modal-table" style="table-layout:fixed; width:100%;">
+                    <table class="visil-modal-table" id="radish-modal-table" style="display:none;">
                         <thead>
                             <tr>
-                                <th style="width:44px; text-align:center;"><input type="checkbox" id="th-select-all" checked></th>
-                                <th style="width:64px; text-align:center;"><?php echo esc_html__('Thumbnail', 'webp-radish-webp-optimizer'); ?></th>
-                                <th style="width:36%;"><?php echo esc_html__('File Name / Upload Date', 'webp-radish-webp-optimizer'); ?></th>
-                                <th style="width:18%;"><?php echo esc_html__('Original Size', 'webp-radish-webp-optimizer'); ?></th>
-                                <th style="width:18%;"><?php echo esc_html__('WebP Size', 'webp-radish-webp-optimizer'); ?></th>
-                                <th style="width:16%; text-align:center;"><?php echo esc_html__('Status', 'webp-radish-webp-optimizer'); ?></th>
+                                <th style="width: 44px; text-align:center;"><input type="checkbox" id="th-select-all"></th>
+                                <th style="width: 70px; text-align:center;"><?php echo radish_esc_html_t('Thumbnail'); ?></th>
+                                <th style="width: 40%;"><?php echo radish_esc_html_t('File Name / Upload Date'); ?></th>
+                                <th style="width: 15%;"><?php echo radish_esc_html_t('Original Size'); ?></th>
+                                <th style="width: 15%;"><?php echo radish_esc_html_t('WebP Size'); ?></th>
+                                <th style="width: 18%;"><?php echo radish_esc_html_t('Status'); ?></th>
                             </tr>
                         </thead>
                         <tbody id="scanned-media-tbody">
-                            <!-- 动态渲染 -->
+                            <!-- JS 动态注入 -->
                         </tbody>
                     </table>
                 </div>
 
-                <!-- 弹窗 Footer 进度与执行按钮 -->
                 <div class="visil-modal-footer">
-                    <div class="visil-footer-progress">
-                        <div id="bulk-progress-container" style="display:none;">
-                            <div class="progress-bar-bg">
-                                <div id="bulk-progress-bar" class="progress-bar-fill" style="width: 0%;"></div>
-                            </div>
-                            <div class="progress-status">
-                                <span id="bulk-progress-text"><?php echo esc_html__('Ready to start...', 'webp-radish-webp-optimizer'); ?></span>
-                                <span id="bulk-progress-percent">0%</span>
-                            </div>
+                    <div class="visil-footer-left" style="display:flex; align-items:center; gap:16px;">
+                        <div style="font-size:13.5px; color:#334155;">
+                            <?php echo radish_esc_html_t('Selected:'); ?> <strong id="selected-count" style="color:var(--radish-primary); font-size:16px;">0</strong> / <span id="total-scanned-count">0</span>
+                        </div>
+                        <div id="bulk-progress-container" style="display:none; width:260px;">
+                            <div class="progress-bar-bg"><div id="bulk-progress-bar" class="progress-bar-fill" style="width:0%;"></div></div>
+                            <div class="progress-status"><span id="bulk-progress-text"><?php echo radish_esc_html_t('Optimizing...'); ?></span><span id="bulk-progress-percent">0%</span></div>
                         </div>
                     </div>
 
-                    <div class="visil-footer-actions">
-                        <button id="btn-start-bulk" type="button" class="button button-primary button-hero" style="min-width:240px; text-align:center; font-size:15px; font-weight:700;">
-                            ⚡ <?php echo esc_html__('Start Bulk Optimization', 'webp-radish-webp-optimizer'); ?> (<span id="btn-selected-count">0</span>)
+                    <div class="visil-footer-right" style="display:flex; gap:10px;">
+                        <button id="btn-start-bulk" type="button" class="button button-primary" style="font-weight:700; height:38px; line-height:36px; padding:0 24px !important; border-radius:8px;">
+                            ⚡ <?php echo radish_esc_html_t('Start Bulk Optimization'); ?> (<span id="btn-selected-count">0</span>)
+                        </button>
+                        <button id="btn-close-modal-footer" type="button" class="button" style="height:38px; line-height:36px; border-radius:8px;">
+                            <?php echo radish_esc_html_t('Close (ESC)'); ?>
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ================= 全新高清大图放大预览灯箱 (Lightbox) ================= -->
+        <!-- 4. 高清大图灯箱预览 -->
         <div id="radish-lightbox-modal" class="radish-lightbox-overlay">
             <div class="radish-lightbox-container">
-                <button type="button" class="radish-lightbox-close" id="btn-close-lightbox" title="<?php echo esc_attr__('Close (ESC)', 'webp-radish-webp-optimizer'); ?>">&times;</button>
+                <button type="button" id="btn-close-lightbox" class="radish-lightbox-close">&times;</button>
                 <div class="radish-lightbox-img-wrap">
-                    <img id="radish-lightbox-img" src="" alt="<?php echo esc_attr__('Preview', 'webp-radish-webp-optimizer'); ?>">
+                    <img id="radish-lightbox-img" src="" alt="<?php echo esc_attr(radish_t('Image Preview')); ?>">
                 </div>
                 <div id="radish-lightbox-caption" class="radish-lightbox-caption"></div>
             </div>

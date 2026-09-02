@@ -21,6 +21,7 @@ define('RADISH_WEBP_URL', plugin_dir_url(__FILE__));
 define('RADISH_WEBP_BASENAME', plugin_basename(__FILE__));
 
 // 加载核心模块类
+require_once RADISH_WEBP_PATH . 'includes/class-i18n.php';
 require_once RADISH_WEBP_PATH . 'includes/class-converter.php';
 require_once RADISH_WEBP_PATH . 'includes/class-frontend.php';
 require_once RADISH_WEBP_PATH . 'includes/class-admin.php';

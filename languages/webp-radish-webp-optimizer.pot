@@ -1,12 +1,11 @@
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Radish WebP Optimizer 1.1.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/webp-radish-webp-optimizer\n"
-"POT-Creation-Date: 2026-09-02 17:38+0800\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"POT-Creation-Date: 2026-09-02 18:25+0800\n"
+"PO-Revision-Date: 2026-09-02 18:25+0800\n"
 "Last-Translator: 求知的萝卜\n"
-"Language-Team: English\n"
+"Language-Team: 简体中文\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -14,10 +13,133 @@ msgstr ""
 "X-Generator: Poedit 3.0\n"
 "X-Domain: webp-radish-webp-optimizer\n"
 
-msgid "Settings"
+msgid "Radish WebP Optimizer"
 msgstr ""
 
 msgid "🥕 Radish WebP Optimizer"
+msgstr ""
+
+msgid "🥕 Radish WebP"
+msgstr ""
+
+msgid "Dual-stage optimization architecture for massive server storage savings and lightning-fast WebP loading."
+msgstr ""
+
+msgid "PHP Version:"
+msgstr ""
+
+msgid "Driver:"
+msgstr ""
+
+msgid "Engine Active"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "Bulk Optimization Workbench"
+msgstr ""
+
+msgid "Scan and filter all media library images in an independent large modal dialog with large preview, selection, and dual-optimization."
+msgstr ""
+
+msgid "Open Bulk Optimization Workbench"
+msgstr ""
+
+msgid "No Horizontal Scroll"
+msgstr ""
+
+msgid "Lightbox Large Preview"
+msgstr ""
+
+msgid "Batch Selection"
+msgstr ""
+
+msgid "Core Optimization Settings"
+msgstr ""
+
+msgid "Interface Language"
+msgstr ""
+
+msgid "Select the display language for the plugin settings and batch workbench."
+msgstr ""
+
+msgid "Auto (Follow Site Language)"
+msgstr ""
+
+msgid "Simplified Chinese"
+msgstr ""
+
+msgid "English"
+msgstr ""
+
+msgid "Enable Plugin Features"
+msgstr ""
+
+msgid "Master switch. Disabling stops frontend replacement and automatic conversion."
+msgstr ""
+
+msgid "Auto Convert on Upload"
+msgstr ""
+
+msgid "Automatically optimize original images and generate WebP files upon uploading new JPG/PNG."
+msgstr ""
+
+msgid "Original Slimming & Safe Backup"
+msgstr ""
+
+msgid "Enable Original Image Slimming Optimization"
+msgstr ""
+
+msgid "Strip EXIF metadata and perform smart color quantization on JPG/PNG originals to drastically save server disk space!"
+msgstr ""
+
+msgid "Keep Initial Master Backup (.radish_bak)"
+msgstr ""
+
+msgid "Preserve a .radish_bak backup before slimming. Enables one-click restoration in Media Library anytime."
+msgstr ""
+
+msgid "Original Image Quality:"
+msgstr ""
+
+msgid "(Recommended: 82% ~ 85% for high visual fidelity)"
+msgstr ""
+
+msgid "Max Original Resolution Dimension:"
+msgstr ""
+
+msgid "WebP Conversion Quality"
+msgstr ""
+
+msgid "WebP quality delivered to website visitors. Recommended: 75% ~ 82% (sweet spot for size & quality)."
+msgstr ""
+
+msgid "Frontend Delivery Mode"
+msgstr ""
+
+msgid "HTML5 <picture> Mode"
+msgstr ""
+
+msgid "Recommended"
+msgstr ""
+
+msgid "Modern browsers load WebP, legacy clients automatically fallback to original images. 100% zero broken images."
+msgstr ""
+
+msgid "Direct URL Replacement Mode"
+msgstr ""
+
+msgid "Directly replaces <img src="..."> image URLs with .webp URLs."
+msgstr ""
+
+msgid "Save Changes"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "Settings & Dashboard"
 msgstr ""
 
 msgid "Dual Optimization & Actions"
@@ -101,184 +223,28 @@ msgstr ""
 msgid "Optimizing..."
 msgstr ""
 
-msgid "🎉 All selected images have been optimized successfully!"
+msgid "Bulk Process Finished"
 msgstr ""
 
-msgid "An error occurred during operation"
+msgid "All media library images are fully optimized."
 msgstr ""
 
-msgid "Restoring..."
+msgid "Total items processed:"
 msgstr ""
 
-msgid "✔ Restored successfully"
+msgid "Total storage saved:"
 msgstr ""
 
-msgid "✔ Optimized successfully"
+msgid "Original Size:"
 msgstr ""
 
-msgid "Are you sure you want to restore the initial uncompressed original file?"
+msgid "Optimized WebP Size:"
 msgstr ""
 
-msgid "Please select at least one image!"
-msgstr ""
-
-msgid "Please select at least one action (Optimize Original or Generate WebP)!"
-msgstr ""
-
-msgid "Scanning media library images, please wait..."
-msgstr ""
-
-msgid "No JPG/PNG images found in media library"
-msgstr ""
-
-msgid "🟢 Generated"
-msgstr ""
-
-msgid "⚪ Not Generated"
-msgstr ""
-
-msgid "Scan failed, please check network connection"
-msgstr ""
-
-msgid "Image Preview"
-msgstr ""
-
-msgid "🔍 Click to view large image preview"
-msgstr ""
-
-msgid "Upload date:"
-msgstr ""
-
-msgid "Re-optimize selected images"
-msgstr ""
-
-msgid "由 求知的萝卜 出品： Dual-stage optimization architecture for massive server storage savings and lightning-fast WebP loading."
-msgstr ""
-
-msgid "System Health & Environment"
-msgstr ""
-
-msgid "Current PHP Version:"
-msgstr ""
-
-msgid "Image Processing Driver:"
-msgstr ""
-
-msgid "Recommended, full metadata & color optimization supported"
-msgstr ""
-
-msgid "WebP supported"
-msgstr ""
-
-msgid "No WebP driver found (Please enable gd or imagick in php.ini)"
-msgstr ""
-
-msgid "Core Optimization Settings"
-msgstr ""
-
-msgid "Enable Plugin Features"
-msgstr ""
-
-msgid "Master switch. Disabling stops frontend replacement and automatic conversion."
-msgstr ""
-
-msgid "Auto Convert on Upload"
-msgstr ""
-
-msgid "Automatically optimize original images and generate WebP files upon uploading new JPG/PNG."
-msgstr ""
-
-msgid "Original Image Slimming & Safe Backup"
-msgstr ""
-
-msgid "Enable Original Image Slimming Optimization"
-msgstr ""
-
-msgid "Strip EXIF metadata and perform smart color quantization on JPG/PNG originals to drastically save server disk space!"
-msgstr ""
-
-msgid "Keep Initial Master Backup (.radish_bak)"
-msgstr ""
-
-msgid "Preserve a .radish_bak backup before slimming. Enables one-click restoration in Media Library anytime."
-msgstr ""
-
-msgid "Original Image Quality:"
-msgstr ""
-
-msgid "(Recommended: 82% ~ 85% for high visual fidelity)"
-msgstr ""
-
-msgid "Max Original Resolution Dimension:"
-msgstr ""
-
-msgid "(Prevents 4K/6K giant photos from filling up server disk. 0 for unlimited)"
-msgstr ""
-
-msgid "WebP Conversion Quality"
-msgstr ""
-
-msgid "WebP quality delivered to website visitors. Recommended: 75% ~ 82% (sweet spot for size & quality)."
-msgstr ""
-
-msgid "Frontend Delivery Mode"
-msgstr ""
-
-msgid "HTML5 <picture> Mode (Strongly Recommended)"
-msgstr ""
-
-msgid "Modern browsers load WebP, legacy clients automatically fallback to original images. 100% zero broken images."
-msgstr ""
-
-msgid "Direct URL Replacement Mode"
-msgstr ""
-
-msgid "Directly replaces <img src="..."> image URLs with .webp URLs."
-msgstr ""
-
-msgid "Save Changes"
-msgstr ""
-
-msgid "Bulk Optimization Workbench"
-msgstr ""
-
-msgid "Scan and filter all media library images in an independent large modal dialog with large preview, selection, and dual-optimization."
-msgstr ""
-
-msgid "No Horizontal Scroll:"
-msgstr ""
-
-msgid "Full wide-screen overview in one single screen;"
-msgstr ""
-
-msgid "Lightbox Large Preview:"
-msgstr ""
-
-msgid "Click thumbnails to inspect high-res image quality;"
-msgstr ""
-
-msgid "Batch Selection:"
-msgstr ""
-
-msgid "Select all, invert selection, or unconverted only."
-msgstr ""
-
-msgid "Open Bulk Optimization Workbench"
-msgstr ""
-
-msgid "Radish WebP Optimizer — Bulk Workbench"
+msgid "Close"
 msgstr ""
 
 msgid "Close (ESC)"
-msgstr ""
-
-msgid "Actions:"
-msgstr ""
-
-msgid "Original Slimming"
-msgstr ""
-
-msgid "Generate WebP"
 msgstr ""
 
 msgid "Rescan"
@@ -311,8 +277,42 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-msgid "Ready to start..."
+msgid "Image Preview"
 msgstr ""
 
-msgid "Preview"
+msgid "Processing:"
 msgstr ""
+
+msgid "Completed"
+msgstr ""
+
+msgid "Failed"
+msgstr ""
+
+msgid "Skipped"
+msgstr ""
+
+msgid "Please select at least one image to optimize."
+msgstr ""
+
+msgid "Please select at least one task (Slim Original or Generate WebP)."
+msgstr ""
+
+msgid "Actions:"
+msgstr ""
+
+msgid "Slim Original"
+msgstr ""
+
+msgid "No metadata found"
+msgstr ""
+
+msgid "WebP exists, skipped"
+msgstr ""
+
+msgid "Processed successfully"
+msgstr ""
+
+msgid "Invalid file path"
+msgstr ""
+
