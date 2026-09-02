@@ -3,10 +3,17 @@
 <p align="center">
   <img src="https://img.shields.io/badge/WordPress-5.0+-21759B?style=flat-square&logo=wordpress&logoColor=white" alt="WordPress Version">
   <img src="https://img.shields.io/badge/PHP-7.2+-777BB4?style=flat-square&logo=php&logoColor=white" alt="PHP Version">
+  <img src="https://img.shields.io/badge/Release-v1.1.0-2ea44f?style=flat-square&logo=github" alt="Latest Release">
   <img src="https://img.shields.io/badge/SEO-Core%20Web%20Vitals%20Ready-success?style=flat-square" alt="SEO Optimized">
   <img src="https://img.shields.io/badge/Server%20Savings-Up%20to%2085%25-blue?style=flat-square" alt="Server Savings">
   <img src="https://img.shields.io/badge/License-GPL--2.0-green?style=flat-square" alt="License">
   <img src="https://img.shields.io/badge/Author-求知的萝卜-orange?style=flat-square" alt="Author">
+</p>
+
+<p align="center">
+  <a href="https://github.com/kekeradish/radish-webp-optimizer/releases/latest/download/radish-webp-optimizer.zip">
+    <img src="https://img.shields.io/badge/🚀_点击一键下载插件安装包-v1.1.0_(ZIP)-2ea44f?style=for-the-badge&logo=wordpress&logoColor=white" alt="Direct Download ZIP">
+  </a>
 </p>
 
 > **出品人**：微信公众号 **【求知的萝卜】**  
