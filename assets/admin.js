@@ -31,6 +31,11 @@ jQuery(document).ready(function ($) {
     var $lightboxImg = $('#radish-lightbox-img');
     var $lightboxCaption = $('#radish-lightbox-caption');
 
+    // 确保灯箱直接挂载在 body 根节点，不受任何父级堆叠上下文影响
+    if ($lightbox.length) {
+        $('body').append($lightbox);
+    }
+
     // -------------------------------------------------------------
     // 0. Global Open / Close Fallback
     // -------------------------------------------------------------
@@ -71,7 +76,7 @@ jQuery(document).ready(function ($) {
 
     $(document).on('keydown', function (e) {
         if (e.key === 'Escape') {
-            if ($lightbox.is(':visible')) {
+            if ($('#radish-lightbox-modal').is(':visible')) {
                 closeLightbox();
             } else if ($modal.is(':visible')) {
                 window.radishCloseModalDirect(e);
@@ -90,57 +95,35 @@ jQuery(document).ready(function ($) {
     });
 
     // -------------------------------------------------------------
-    // 2. High-res Lightbox Preview (全局直调 + 双重保底)
+    // 2. Click Thumbnail to open Lightbox (大图灯箱直开)
     // -------------------------------------------------------------
-    window.radishOpenLightbox = function (url, title) {
-        if (!url) return;
-        var modal = document.getElementById('radish-lightbox-modal');
-        var img = document.getElementById('radish-lightbox-img');
-        var cap = document.getElementById('radish-lightbox-caption');
-        if (modal && img) {
-            img.src = url;
-            if (cap) cap.innerText = title || '';
-            modal.style.display = 'flex';
-            modal.classList.add('active');
-        }
-    };
-
-    window.radishCloseLightbox = function (e) {
-        if (e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-        var modal = document.getElementById('radish-lightbox-modal');
-        var img = document.getElementById('radish-lightbox-img');
-        if (modal) {
-            modal.style.display = 'none';
-            modal.classList.remove('active');
-        }
-        if (img) {
-            img.src = '';
-        }
-    };
-
     $(document).on('click', '.visil-thumb-img', function (e) {
+        e.preventDefault();
         e.stopPropagation();
-        var fullUrl = $(this).data('full-url') || $(this).attr('src');
-        var title = $(this).data('title') || s.previewTitle || 'Image Preview';
-        window.radishOpenLightbox(fullUrl, title);
+        var fullUrl = $(this).attr('data-full-url') || $(this).attr('src');
+        var title = $(this).attr('data-title') || s.previewTitle || 'Image Preview';
+
+        if (fullUrl) {
+            $('#radish-lightbox-img').attr('src', fullUrl);
+            $('#radish-lightbox-caption').text(title);
+            $('#radish-lightbox-modal').css('display', 'flex').addClass('active');
+        }
     });
 
     $(document).on('click', '#btn-close-lightbox', function (e) {
         e.stopPropagation();
-        window.radishCloseLightbox(e);
+        closeLightbox();
     });
 
-    $lightbox.on('click', function (e) {
+    $(document).on('click', '#radish-lightbox-modal', function (e) {
         if ($(e.target).is('#radish-lightbox-modal') || $(e.target).hasClass('radish-lightbox-overlay')) {
-            window.radishCloseLightbox(e);
+            closeLightbox();
         }
     });
 
     function closeLightbox() {
-        window.radishCloseLightbox();
+        $('#radish-lightbox-modal').css('display', 'none').removeClass('active');
+        $('#radish-lightbox-img').attr('src', '');
     }
 
     // -------------------------------------------------------------
@@ -200,9 +183,9 @@ jQuery(document).ready(function ($) {
                 : '<span style="color:#a7aaad;">—</span>';
 
             var previewUrl = item.full_img || item.thumb;
-            var safeTitle = (item.title || '').replace(/'/g, "\\'");
+            var safeTitle = $('<div>').text(item.title || '').html();
             var thumbImg = item.thumb 
-                ? '<img src="' + item.thumb + '" data-full-url="' + previewUrl + '" data-title="' + safeTitle + '" onclick="event.stopPropagation(); window.radishOpenLightbox && window.radishOpenLightbox(\'' + previewUrl + '\', \'' + safeTitle + '\');" class="visil-thumb-img" title="' + hoverText + '">' 
+                ? '<img src="' + item.thumb + '" data-full-url="' + previewUrl + '" data-title="' + safeTitle + '" class="visil-thumb-img" title="' + hoverText + '">' 
                 : '<span style="font-size:24px;">🖼️</span>';
 
             rowsHtml += '<tr id="scan-row-' + item.id + '" class="row-selected" data-has-webp="' + (item.has_webp ? '1' : '0') + '">' +

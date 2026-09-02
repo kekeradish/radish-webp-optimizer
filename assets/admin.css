@@ -592,15 +592,18 @@ input:checked + .slider:before {
 /* ==========================================================================
    5. 高清大图灯箱预览 (Lightbox) - 彻底隐藏无残留
    ========================================================================== */
+/* ==========================================================================
+   5. 高清大图灯箱预览 (Lightbox) - 浏览器全局绝对顶层
+   ========================================================================== */
 .radish-lightbox-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(15, 23, 42, 0.9);
-    backdrop-filter: blur(12px);
-    z-index: 2147483647 !important; /* 绝对最高顶层，确保盖过一切弹窗 */
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(15, 23, 42, 0.92) !important;
+    backdrop-filter: blur(12px) !important;
+    z-index: 2147483647 !important; /* 浏览器允许的绝对最高层级 */
     display: none;
     align-items: center;
     justify-content: center;
@@ -634,7 +637,7 @@ input:checked + .slider:before {
     max-height: 78vh;
     object-fit: contain;
     border-radius: 12px;
-    box-shadow: 0 25px 70px rgba(0,0,0,0.7);
+    box-shadow: 0 25px 70px rgba(0,0,0,0.8);
     background: #0f172a;
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
@@ -645,22 +648,23 @@ input:checked + .slider:before {
     font-size: 14px;
     font-weight: 600;
     text-align: center;
-    background: rgba(15, 23, 42, 0.6);
-    padding: 4px 16px;
+    background: rgba(15, 23, 42, 0.7);
+    padding: 6px 18px;
     border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .radish-lightbox-close {
     position: absolute;
     top: -42px;
     right: 0;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.25);
     border: none;
     color: #fff;
     font-size: 24px;
     line-height: 1;
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
@@ -670,5 +674,17 @@ input:checked + .slider:before {
 }
 
 .radish-lightbox-close:hover {
-    background: rgba(239, 68, 68, 0.85);
+    background: rgba(239, 68, 68, 0.9);
+}
+
+.visil-thumb-img {
+    cursor: zoom-in !important;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s !important;
+    position: relative;
+    z-index: 10;
+}
+
+.visil-thumb-img:hover {
+    transform: scale(1.15) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
 }
