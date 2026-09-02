@@ -185,14 +185,17 @@ class Radish_WebP_Bulk_Processor {
             $new_orig_size_str = '<strong>' . size_format($current_orig_bytes, 1) . '</strong>';
             if ($do_opt_orig) {
                 if ($initial_size_bytes && $initial_size_bytes > $current_orig_bytes) {
-                    $saved_pct = round((($initial_size_bytes - $current_orig_bytes) / $initial_size_bytes) * 100);
+                    $saved_bytes = $initial_size_bytes - $current_orig_bytes;
+                    $saved_pct = round(($saved_bytes / $initial_size_bytes) * 100);
                     if ($saved_pct > 0) {
                         $new_orig_size_str = '<del style="color:#94a3b8; font-size:12px;">' . size_format($initial_size_bytes, 1) . '</del> → <strong style="color:#2563eb;">' . size_format($current_orig_bytes, 1) . '</strong> <span style="color:#2563eb; font-weight:700; font-size:11px;">(-' . $saved_pct . '%)</span>';
+                    } elseif ($saved_bytes > 0) {
+                        $new_orig_size_str = '<del style="color:#94a3b8; font-size:12px;">' . size_format($initial_size_bytes, 1) . '</del> → <strong style="color:#2563eb;">' . size_format($current_orig_bytes, 1) . '</strong> <span style="color:#2563eb; font-weight:700; font-size:11px;">(-' . size_format($saved_bytes) . ')</span>';
                     } else {
-                        $new_orig_size_str = '<strong style="color:#2563eb;">' . size_format($current_orig_bytes, 1) . '</strong> <span style="color:#10b981; font-weight:600; font-size:11px;">(' . radish_t('Optimal') . ')</span>';
+                        $new_orig_size_str = '<strong style="color:#2563eb;">' . size_format($current_orig_bytes, 1) . '</strong>';
                     }
                 } else {
-                    $new_orig_size_str = '<strong style="color:#2563eb;">' . size_format($current_orig_bytes, 1) . '</strong> <span style="color:#10b981; font-weight:600; font-size:11px;">(' . radish_t('Optimal') . ')</span>';
+                    $new_orig_size_str = '<strong style="color:#2563eb;">' . size_format($current_orig_bytes, 1) . '</strong>';
                 }
             }
 
