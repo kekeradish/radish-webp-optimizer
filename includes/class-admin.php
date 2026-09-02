@@ -597,17 +597,6 @@ class Radish_WebP_Admin {
                 </div>
             </div>
         </div>
-
-        <!-- 4. 高清大图灯箱预览 -->
-        <div id="radish-lightbox-modal" class="radish-lightbox-overlay" style="display:none;" onclick="if(window.radishCloseLightbox){window.radishCloseLightbox(event);}">
-            <div class="radish-lightbox-container" onclick="event.stopPropagation();">
-                <button type="button" id="btn-close-lightbox" class="radish-lightbox-close" onclick="if(window.radishCloseLightbox){window.radishCloseLightbox(event);}">&times;</button>
-                <div class="radish-lightbox-img-wrap">
-                    <img id="radish-lightbox-img" src="" alt="">
-                </div>
-                <div id="radish-lightbox-caption" class="radish-lightbox-caption"></div>
-            </div>
-        </div>
         <?php
     }
 }

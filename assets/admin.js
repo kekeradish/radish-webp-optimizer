@@ -95,36 +95,49 @@ jQuery(document).ready(function ($) {
     });
 
     // -------------------------------------------------------------
-    // 2. Click Thumbnail to open Lightbox (大图灯箱直开)
+    // 2. High-res Dynamic Lightbox Engine (纯动态顶级毛玻璃大图灯箱)
     // -------------------------------------------------------------
+    window.radishShowLightbox = function (fullUrl, title) {
+        if (!fullUrl) return;
+        $('#radish-dynamic-lightbox').remove();
+
+        var titleHtml = title ? '<div style="margin-top:14px; color:#f8fafc; font-size:14px; font-weight:600; text-align:center; background:rgba(15,23,42,0.75); padding:6px 20px; border-radius:20px; border:1px solid rgba(255,255,255,0.15); box-shadow:0 4px 20px rgba(0,0,0,0.5); pointer-events:auto; max-width:80vw; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' + title + '</div>' : '';
+
+        var lightboxHtml = '<div id="radish-dynamic-lightbox" style="position:fixed !important; top:0 !important; left:0 !important; width:100vw !important; height:100vh !important; background:rgba(15,23,42,0.92) !important; backdrop-filter:blur(12px) !important; -webkit-backdrop-filter:blur(12px) !important; z-index:2147483647 !important; display:flex !important; flex-direction:column !important; align-items:center !important; justify-content:center !important; padding:24px !important; box-sizing:border-box !important; cursor:zoom-out !important; animation:radishPopIn 0.2s cubic-bezier(0.16,1,0.3,1);">' +
+            '<button type="button" id="btn-close-dyn-lightbox" style="position:absolute !important; top:24px !important; right:28px !important; width:40px !important; height:40px !important; border-radius:50% !important; background:rgba(255,255,255,0.2) !important; border:none !important; color:#ffffff !important; font-size:26px !important; line-height:1 !important; cursor:pointer !important; display:flex !important; align-items:center !important; justify-content:center !important; transition:background 0.2s !important; z-index:10 !important;">&times;</button>' +
+            '<div style="max-width:90vw; max-height:82vh; display:flex; align-items:center; justify-content:center; pointer-events:none;">' +
+                '<img src="' + fullUrl + '" style="max-width:88vw !important; max-height:78vh !important; object-fit:contain !important; border-radius:12px !important; box-shadow:0 25px 70px rgba(0,0,0,0.85) !important; border:1px solid rgba(255,255,255,0.2) !important; background:#0f172a !important; pointer-events:auto !important; cursor:default !important;">' +
+            '</div>' +
+            titleHtml +
+        '</div>';
+
+        var $box = $(lightboxHtml).appendTo('body');
+
+        $box.on('click', function (e) {
+            if (!$(e.target).is('img')) {
+                $box.fadeOut(150, function () { $box.remove(); });
+            }
+        });
+
+        $('#btn-close-dyn-lightbox').on('click', function (e) {
+            e.stopPropagation();
+            $box.fadeOut(150, function () { $box.remove(); });
+        });
+
+        $(document).one('keydown.radishLightbox', function (e) {
+            if (e.key === 'Escape') {
+                $box.fadeOut(150, function () { $box.remove(); });
+            }
+        });
+    };
+
     $(document).on('click', '.visil-thumb-img', function (e) {
         e.preventDefault();
         e.stopPropagation();
         var fullUrl = $(this).attr('data-full-url') || $(this).attr('src');
         var title = $(this).attr('data-title') || s.previewTitle || 'Image Preview';
-
-        if (fullUrl) {
-            $('#radish-lightbox-img').attr('src', fullUrl);
-            $('#radish-lightbox-caption').text(title);
-            $('#radish-lightbox-modal').css('display', 'flex').addClass('active');
-        }
+        window.radishShowLightbox(fullUrl, title);
     });
-
-    $(document).on('click', '#btn-close-lightbox', function (e) {
-        e.stopPropagation();
-        closeLightbox();
-    });
-
-    $(document).on('click', '#radish-lightbox-modal', function (e) {
-        if ($(e.target).is('#radish-lightbox-modal') || $(e.target).hasClass('radish-lightbox-overlay')) {
-            closeLightbox();
-        }
-    });
-
-    function closeLightbox() {
-        $('#radish-lightbox-modal').css('display', 'none').removeClass('active');
-        $('#radish-lightbox-img').attr('src', '');
-    }
 
     // -------------------------------------------------------------
     // 3. Scan Media Library
