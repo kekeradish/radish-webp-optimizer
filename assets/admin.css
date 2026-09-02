@@ -1,34 +1,178 @@
-/* Visil WebP Converter 后台现代卡片式风格样式 */
+/**
+ * Radish WebP Optimizer (萝卜 WebP 大师) v1.1.1
+ * Modern, High-End UI Stylesheet (Hallmark/Linear-inspired)
+ */
+
+:root {
+    --radish-primary: #ff5e36;
+    --radish-primary-hover: #e04822;
+    --radish-primary-light: #fff3f0;
+    --radish-blue: #2563eb;
+    --radish-blue-light: #eff6ff;
+    --radish-green: #10b981;
+    --radish-green-light: #ecfdf5;
+    --radish-text-main: #0f172a;
+    --radish-text-muted: #64748b;
+    --radish-border: #e2e8f0;
+    --radish-card-bg: #ffffff;
+    --radish-radius: 12px;
+    --radish-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+    --radish-shadow-hover: 0 10px 25px -3px rgba(15, 23, 42, 0.1), 0 4px 10px -2px rgba(15, 23, 42, 0.04);
+}
+
 .visil-webp-wrap {
-    max-width: 1200px;
-    margin-top: 20px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    max-width: 1240px;
+    margin: 24px 20px 40px 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    color: var(--radish-text-main);
 }
 
-.visil-subtitle {
-    font-size: 14px;
-    color: #646970;
-    margin-bottom: 20px;
-}
-
-.visil-card {
-    background: #ffffff;
-    border: 1px solid #dcdcde;
-    border-radius: 8px;
-    padding: 24px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+/* ==========================================================================
+   1. Brand Header Hero 卡片
+   ========================================================================== */
+.radish-hero-header {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    border-radius: var(--radish-radius);
+    padding: 24px 28px;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: 24px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+.radish-hero-header::after {
+    content: "";
+    position: absolute;
+    right: -40px;
+    top: -40px;
+    width: 220px;
+    height: 220px;
+    background: radial-gradient(circle, rgba(255, 94, 54, 0.25) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.radish-hero-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 2;
+}
+
+.radish-hero-icon {
+    font-size: 38px;
+    line-height: 1;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+}
+
+.radish-hero-titles h1 {
+    margin: 0 0 6px 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.radish-version-tag {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 20px;
+    color: #ffd8cc;
+    letter-spacing: 0.5px;
+}
+
+.radish-hero-titles p {
+    margin: 0;
+    font-size: 13px;
+    color: #94a3b8;
+    line-height: 1.4;
+}
+
+.radish-hero-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    z-index: 2;
+}
+
+.radish-lang-capsule {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 13px;
+    color: #e2e8f0;
+}
+
+.radish-lang-capsule select {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+}
+
+.radish-lang-capsule select option {
+    color: #0f172a;
+    background: #ffffff;
+}
+
+/* ==========================================================================
+   2. 卡片与布局
+   ========================================================================== */
+.visil-card {
+    background: var(--radish-card-bg);
+    border: 1px solid var(--radish-border);
+    border-radius: var(--radish-radius);
+    padding: 24px;
+    box-shadow: var(--radish-shadow);
+    margin-bottom: 24px;
+    transition: all 0.25s ease;
+}
+
+.visil-card:hover {
+    box-shadow: var(--radish-shadow-hover);
 }
 
 .visil-card h2 {
     margin-top: 0;
-    margin-bottom: 16px;
-    font-size: 18px;
-    font-weight: 600;
-    border-bottom: 1px solid #f0f0f1;
-    padding-bottom: 12px;
+    margin-bottom: 18px;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--radish-text-main);
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
+.visil-columns {
+    display: grid;
+    grid-template-columns: 1.65fr 1fr;
+    gap: 24px;
+}
+
+@media (max-width: 960px) {
+    .visil-columns {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 系统状态网格 */
 .visil-health-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -39,52 +183,69 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: #f6f7f7;
-    padding: 12px 16px;
-    border-radius: 6px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 14px 18px;
+    border-radius: 10px;
 }
 
 .health-item .label {
-    font-weight: 500;
-    color: #2c3338;
+    font-weight: 600;
+    color: #475569;
+    font-size: 13px;
 }
 
 .badge {
-    display: inline-block;
-    padding: 4px 10px;
-    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 12px;
+    border-radius: 20px;
     font-size: 12px;
     font-weight: 600;
 }
 
 .badge-success {
-    background: #e7f7ed;
-    color: #008a20;
+    background: var(--radish-green-light);
+    color: var(--radish-green);
+    border: 1px solid rgba(16, 185, 129, 0.2);
 }
 
 .badge-danger {
-    background: #fcf0f0;
-    color: #d63638;
+    background: #fef2f2;
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
-.visil-columns {
-    display: grid;
-    grid-template-columns: 1.5fr 1fr;
-    gap: 24px;
+/* ==========================================================================
+   3. 表单与现代控件
+   ========================================================================== */
+.form-table th {
+    font-weight: 600;
+    color: #334155;
+    padding: 18px 12px 18px 0;
+    font-size: 14px;
+    width: 220px;
 }
 
-@media (max-width: 900px) {
-    .visil-columns {
-        grid-template-columns: 1fr;
-    }
+.form-table td {
+    padding: 16px 10px;
+    vertical-align: middle;
 }
 
-/* 滑块开关 Switch */
+.description {
+    color: var(--radish-text-muted);
+    font-size: 13px;
+    margin-top: 6px;
+    line-height: 1.5;
+}
+
+/* 现代 iOS/macOS 风格 Switch 开关 */
 .switch {
     position: relative;
     display: inline-block;
-    width: 44px;
-    height: 24px;
+    width: 46px;
+    height: 26px;
 }
 
 .switch input {
@@ -100,71 +261,90 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #c3c4c7;
-    transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
-    border-radius: 24px;
+    background-color: #cbd5e1;
+    transition: .25s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 26px;
 }
 
 .slider:before {
     position: absolute;
     content: "";
-    height: 18px;
-    width: 18px;
+    height: 20px;
+    width: 20px;
     left: 3px;
     bottom: 3px;
     background-color: white;
-    transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: .25s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 50%;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 input:checked + .slider {
-    background-color: #2271b1;
+    background: linear-gradient(135deg, var(--radish-primary), #ff3b00);
 }
 
 input:checked + .slider:before {
     transform: translateX(20px);
 }
 
-/* 进度条 */
+/* 子功能卡片区域 */
+.radish-sub-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 10px 0;
+    transition: border-color 0.2s ease;
+}
+
+.radish-sub-box:hover {
+    border-color: #cbd5e1;
+}
+
+/* Range 滑动条美化 */
 .range-container {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
+}
+
+.range-container input[type="range"] {
+    flex: 1;
+    max-width: 260px;
+    accent-color: var(--radish-primary);
+    height: 6px;
+    border-radius: 3px;
 }
 
 .range-val {
-    font-weight: 700;
+    font-weight: 800;
     font-size: 16px;
-    color: #2271b1;
-    min-width: 32px;
+    color: var(--radish-primary);
+    min-width: 44px;
     text-align: right;
+    font-variant-numeric: tabular-nums;
 }
 
-.progress-bar-bg {
-    width: 100%;
-    height: 14px;
-    background: #e2e4e7;
-    border-radius: 7px;
-    overflow: hidden;
-    margin-bottom: 6px;
+/* 主提交按钮美化 */
+.wp-core-ui .button-primary {
+    background: linear-gradient(135deg, var(--radish-primary), #ff4100) !important;
+    border: none !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    border-radius: 8px !important;
+    padding: 6px 24px !important;
+    box-shadow: 0 4px 12px rgba(255, 94, 54, 0.3) !important;
+    transition: all 0.2s ease !important;
 }
 
-.progress-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #2271b1, #3858e9);
-    transition: width 0.3s ease;
-}
-
-.progress-status {
-    display: flex;
-    justify-content: space-between;
-    font-size: 13px;
-    color: #50575e;
+.wp-core-ui .button-primary:hover {
+    background: linear-gradient(135deg, var(--radish-primary-hover), #e03600) !important;
+    box-shadow: 0 6px 16px rgba(255, 94, 54, 0.4) !important;
+    transform: translateY(-1px);
 }
 
 /* ==========================================================================
-   全新宽屏大模态弹窗 (Modal) 样式 — 杜绝横向左右滑动
+   4. 全新全屏大模态弹窗 (Modal UI) 高级质感
    ========================================================================== */
 .visil-modal-overlay {
     position: fixed;
@@ -172,8 +352,8 @@ input:checked + .slider:before {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(15, 23, 42, 0.7);
-    backdrop-filter: blur(5px);
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(8px);
     z-index: 99999;
     display: flex;
     align-items: center;
@@ -182,7 +362,7 @@ input:checked + .slider:before {
     box-sizing: border-box;
     opacity: 0;
     visibility: hidden;
-    transition: all 0.25s ease-in-out;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .visil-modal-overlay.active {
@@ -193,26 +373,26 @@ input:checked + .slider:before {
 .visil-modal-container {
     background: #ffffff;
     width: 94vw;
-    max-width: 1240px;
+    max-width: 1260px;
     height: 88vh;
-    border-radius: 12px;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+    border-radius: 16px;
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.4);
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    transform: scale(0.97);
-    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transform: scale(0.97) translateY(8px);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .visil-modal-overlay.active .visil-modal-container {
-    transform: scale(1);
+    transform: scale(1) translateY(0);
 }
 
-/* 弹窗 Header */
 .visil-modal-header {
-    padding: 16px 24px;
-    background: #ffffff;
-    border-bottom: 1px solid #e2e4e7;
+    padding: 18px 28px;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -223,31 +403,37 @@ input:checked + .slider:before {
     margin: 0;
     font-size: 18px;
     font-weight: 700;
-    color: #1d2327;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .visil-modal-close {
-    background: transparent;
+    background: rgba(255, 255, 255, 0.15);
     border: none;
-    font-size: 26px;
+    font-size: 24px;
     line-height: 1;
-    color: #646970;
+    color: #cbd5e1;
     cursor: pointer;
-    padding: 4px 8px;
-    border-radius: 6px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: all 0.2s;
 }
 
 .visil-modal-close:hover {
-    background: #f0f0f1;
-    color: #d63638;
+    background: rgba(239, 68, 68, 0.8);
+    color: #ffffff;
 }
 
-/* 弹窗工具栏 */
 .visil-modal-toolbar {
-    padding: 12px 24px;
-    background: #f8f9fa;
-    border-bottom: 1px solid #e2e4e7;
+    padding: 14px 28px;
+    background: #f8fafc;
+    border-bottom: 1px solid var(--radish-border);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -259,16 +445,15 @@ input:checked + .slider:before {
 .visil-toolbar-left {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 18px;
 }
 
 .visil-toolbar-right {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
 }
 
-/* 弹窗内容表格区 — 绝对禁止横向滚动条，内容一屏展示 */
 .visil-modal-body {
     flex: 1;
     overflow-y: auto;
@@ -279,7 +464,6 @@ input:checked + .slider:before {
 
 .visil-modal-table {
     width: 100% !important;
-    max-width: 100% !important;
     table-layout: fixed !important;
     border-collapse: collapse;
 }
@@ -287,19 +471,20 @@ input:checked + .slider:before {
 .visil-modal-table th {
     position: sticky;
     top: 0;
-    background: #f0f0f1;
-    padding: 10px 12px;
+    background: #f1f5f9;
+    padding: 12px 16px;
     text-align: left;
-    font-weight: 600;
-    color: #2c3338;
-    border-bottom: 1px solid #dcdcde;
+    font-weight: 700;
+    color: #334155;
+    border-bottom: 1px solid #cbd5e1;
     z-index: 10;
     box-sizing: border-box;
+    font-size: 13px;
 }
 
 .visil-modal-table td {
-    padding: 10px 12px;
-    border-bottom: 1px solid #f0f0f1;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f1f5f9;
     vertical-align: middle;
     font-size: 13px;
     box-sizing: border-box;
@@ -308,45 +493,63 @@ input:checked + .slider:before {
 }
 
 .visil-modal-table tr:hover td {
-    background: #f9f9fb;
+    background: #f8fafc;
 }
 
-/* 可点击放大预览的缩略图 */
 .visil-thumb-img {
-    width: 44px;
-    height: 44px;
+    width: 46px;
+    height: 46px;
     object-fit: cover;
-    border-radius: 6px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     cursor: zoom-in;
     transition: all 0.2s ease;
     display: block;
     margin: 0 auto;
+    border: 1px solid #e2e8f0;
 }
 
 .visil-thumb-img:hover {
-    box-shadow: 0 0 0 2px #2271b1, 0 4px 10px rgba(0,0,0,0.15);
-    transform: scale(1.05);
+    box-shadow: 0 0 0 2px var(--radish-primary), 0 6px 14px rgba(255, 94, 54, 0.25);
+    transform: scale(1.08);
 }
 
-/* 弹窗 Footer */
 .visil-modal-footer {
-    padding: 14px 24px;
+    padding: 16px 28px;
     background: #ffffff;
-    border-top: 1px solid #e2e4e7;
+    border-top: 1px solid var(--radish-border);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 20px;
+    gap: 24px;
     flex-shrink: 0;
 }
 
-.visil-footer-progress {
-    flex: 1;
+.progress-bar-bg {
+    width: 100%;
+    height: 12px;
+    background: #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--radish-primary), #3b82f6);
+    transition: width 0.3s ease;
+}
+
+.progress-status {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
 }
 
 /* ==========================================================================
-   高清大图点击放大预览灯箱 (Lightbox)
+   5. 高清大图灯箱预览 (Lightbox)
    ========================================================================== */
 .radish-lightbox-overlay {
     position: fixed;
@@ -354,15 +557,15 @@ input:checked + .slider:before {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(6px);
+    background: rgba(15, 23, 42, 0.9);
+    backdrop-filter: blur(10px);
     z-index: 999999;
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 0;
     visibility: hidden;
-    transition: all 0.2s ease-in-out;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     padding: 30px;
     box-sizing: border-box;
     cursor: zoom-out;
@@ -381,43 +584,43 @@ input:checked + .slider:before {
     flex-direction: column;
     align-items: center;
     cursor: default;
+    transform: scale(0.95);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.radish-lightbox-img-wrap {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.radish-lightbox-overlay.active .radish-lightbox-container {
+    transform: scale(1);
 }
 
 .radish-lightbox-img-wrap img {
     max-width: 88vw;
     max-height: 78vh;
     object-fit: contain;
-    border-radius: 8px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-    background: #111;
+    border-radius: 12px;
+    box-shadow: 0 25px 70px rgba(0,0,0,0.6);
+    background: #0f172a;
+    border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .radish-lightbox-caption {
-    margin-top: 12px;
-    color: #ffffff;
+    margin-top: 14px;
+    color: #f8fafc;
     font-size: 14px;
-    font-weight: 500;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    font-weight: 600;
     text-align: center;
 }
 
 .radish-lightbox-close {
     position: absolute;
-    top: -40px;
+    top: -42px;
     right: 0;
     background: rgba(255, 255, 255, 0.2);
     border: none;
     color: #fff;
-    font-size: 28px;
+    font-size: 26px;
     line-height: 1;
-    width: 36px;
-    height: 36px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
@@ -427,5 +630,5 @@ input:checked + .slider:before {
 }
 
 .radish-lightbox-close:hover {
-    background: rgba(255, 255, 255, 0.4);
+    background: rgba(239, 68, 68, 0.8);
 }

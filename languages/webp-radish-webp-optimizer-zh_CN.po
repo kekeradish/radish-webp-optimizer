@@ -324,3 +324,6 @@ msgstr "跟随站点默认语言 (Site Default)"
 
 msgid "Select the display language for the plugin settings and batch workbench."
 msgstr "选择插件管理后台、弹窗工作台与操作提示的界面语言。"
+
+msgid "Engine Active"
+msgstr "引擎运行中"
