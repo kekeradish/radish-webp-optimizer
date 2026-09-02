@@ -59,6 +59,8 @@ class Radish_WebP_I18n {
         'File missing' => '原图丢失',
         '① Original:' => '① 原图:',
         '② WebP:' => '② WebP:',
+        'Optimal' => '已最优',
+        'Not generated' => '尚未生成',
         '② WebP: Not generated' => '② WebP: 尚未生成',
         'Optimize original image and generate WebP' => '对原图进行自身瘦身并生成 WebP',
         'Optimize' => '单独优化',

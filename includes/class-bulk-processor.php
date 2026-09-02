@@ -64,7 +64,9 @@ class Radish_WebP_Bulk_Processor {
             $orig_size_display = '<strong>' . size_format($orig_size, 1) . '</strong>';
             if ($initial_size && $initial_size > $orig_size) {
                 $saved_pct = round((($initial_size - $orig_size) / $initial_size) * 100);
-                $orig_size_display = '<del style="color:#94a3b8; font-size:12px;">' . size_format($initial_size, 1) . '</del> → <strong style="color:#2563eb;">' . size_format($orig_size, 1) . '</strong>' . ($saved_pct > 0 ? ' <span style="color:#2563eb; font-weight:700; font-size:11px;">(-' . $saved_pct . '%)</span>' : '');
+                if ($saved_pct > 0) {
+                    $orig_size_display = '<del style="color:#94a3b8; font-size:12px;">' . size_format($initial_size, 1) . '</del> → <strong style="color:#2563eb;">' . size_format($orig_size, 1) . '</strong> <span style="color:#2563eb; font-weight:700; font-size:11px;">(-' . $saved_pct . '%)</span>';
+                }
             }
 
             $items[] = array(
@@ -181,9 +183,17 @@ class Radish_WebP_Bulk_Processor {
             $initial_size_bytes = get_post_meta($attachment_id, '_radish_initial_size', true);
             
             $new_orig_size_str = '<strong>' . size_format($current_orig_bytes, 1) . '</strong>';
-            if ($initial_size_bytes && $initial_size_bytes > $current_orig_bytes) {
-                $saved_pct = round((($initial_size_bytes - $current_orig_bytes) / $initial_size_bytes) * 100);
-                $new_orig_size_str = '<del style="color:#94a3b8; font-size:12px;">' . size_format($initial_size_bytes, 1) . '</del> → <strong style="color:#2563eb;">' . size_format($current_orig_bytes, 1) . '</strong>' . ($saved_pct > 0 ? ' <span style="color:#2563eb; font-weight:700; font-size:11px;">(-' . $saved_pct . '%)</span>' : '');
+            if ($do_opt_orig) {
+                if ($initial_size_bytes && $initial_size_bytes > $current_orig_bytes) {
+                    $saved_pct = round((($initial_size_bytes - $current_orig_bytes) / $initial_size_bytes) * 100);
+                    if ($saved_pct > 0) {
+                        $new_orig_size_str = '<del style="color:#94a3b8; font-size:12px;">' . size_format($initial_size_bytes, 1) . '</del> → <strong style="color:#2563eb;">' . size_format($current_orig_bytes, 1) . '</strong> <span style="color:#2563eb; font-weight:700; font-size:11px;">(-' . $saved_pct . '%)</span>';
+                    } else {
+                        $new_orig_size_str = '<strong style="color:#2563eb;">' . size_format($current_orig_bytes, 1) . '</strong> <span style="color:#10b981; font-weight:600; font-size:11px;">(' . radish_t('Optimal') . ')</span>';
+                    }
+                } else {
+                    $new_orig_size_str = '<strong style="color:#2563eb;">' . size_format($current_orig_bytes, 1) . '</strong> <span style="color:#10b981; font-weight:600; font-size:11px;">(' . radish_t('Optimal') . ')</span>';
+                }
             }
 
             $new_webp_size_str = file_exists($webp_original) ? size_format(filesize($webp_original), 1) : '';
