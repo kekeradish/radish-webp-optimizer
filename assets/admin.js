@@ -1,28 +1,25 @@
 /**
- * Radish WebP Optimizer (萝卜 WebP 大师) v1.1.1
- * Bilingual (i18n), Modal Workbench, Lightbox & Asynchronous Bulk Optimization
+ * 萝卜 WebP 大师 (Radish WebP Optimizer) - 后台交互与批量处理引擎
  */
+
 jQuery(document).ready(function ($) {
+    'use strict';
+
+    var s = (typeof radishWebpData !== 'undefined' && radishWebpData.strings) ? radishWebpData.strings : {};
     var scannedItems = [];
     var queue = [];
     var totalItems = 0;
     var processedCount = 0;
 
-    var s = (typeof radishWebpData !== 'undefined' && radishWebpData.strings) ? radishWebpData.strings : {};
-
+    // DOM 元素缓存
     var $modal = $('#radish-bulk-modal');
-    var $btnOpenModal = $('#btn-open-modal');
-    var $btnCloseModal = $('#btn-close-modal');
-    var $btnRescan = $('#btn-modal-rescan');
-
+    var $loadingState = $('#modal-loading-state');
     var $table = $('#radish-modal-table');
     var $tbody = $('#scanned-media-tbody');
-    var $loadingState = $('#modal-loading-state');
+    var $totalCount = $('#total-scanned-count');
     var $selectedCount = $('#selected-count');
     var $btnSelectedCount = $('#btn-selected-count');
-    var $totalCount = $('#total-scanned-count');
     var $thSelectAll = $('#th-select-all');
-
     var $btnStart = $('#btn-start-bulk');
     var $progressContainer = $('#bulk-progress-container');
     var $progressBar = $('#bulk-progress-bar');
@@ -32,12 +29,14 @@ jQuery(document).ready(function ($) {
     // Lightbox DOM
     var $lightbox = $('#radish-lightbox-modal');
     var $lightboxImg = $('#radish-lightbox-img');
+    var $lightboxCaption = $('#radish-lightbox-caption');
+
     // -------------------------------------------------------------
-    // 0. Global Fallback Open / Close Functions
+    // 0. Global Open / Close Fallback
     // -------------------------------------------------------------
     window.radishOpenModalDirect = function (e) {
         if (e) e.preventDefault();
-        $('#radish-bulk-modal').css('display', 'flex').addClass('active');
+        $modal.css('display', 'flex').addClass('active');
         $('body').css('overflow', 'hidden');
         if (scannedItems.length === 0) {
             triggerScan();
@@ -45,11 +44,8 @@ jQuery(document).ready(function ($) {
     };
 
     window.radishCloseModalDirect = function (e) {
-        if (e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-        $('#radish-bulk-modal').css('display', 'none').removeClass('active');
+        if (e) e.preventDefault();
+        $modal.css('display', 'none').removeClass('active');
         $('body').css('overflow', '');
     };
 
@@ -61,7 +57,7 @@ jQuery(document).ready(function ($) {
     });
 
     // -------------------------------------------------------------
-    // 1. Modal Open / Close (全局委托确保 100% 触发)
+    // 1. Modal Open / Close
     // -------------------------------------------------------------
     $(document).on('click', '#btn-open-modal, .btn-open-modal', function (e) {
         e.preventDefault();
@@ -75,25 +71,21 @@ jQuery(document).ready(function ($) {
 
     $(document).on('keydown', function (e) {
         if (e.key === 'Escape') {
-            if ($lightbox.hasClass('active') || $lightbox.is(':visible')) {
+            if ($lightbox.is(':visible')) {
                 closeLightbox();
-            } else if ($modal.hasClass('active') || $modal.is(':visible')) {
+            } else if ($modal.is(':visible')) {
                 window.radishCloseModalDirect(e);
             }
         }
     });
 
     $modal.on('click', function (e) {
-        if ($(e.target).hasClass('visil-modal-overlay')) {
+        if ($(e.target).is('#radish-bulk-modal') || $(e.target).hasClass('visil-modal-overlay')) {
             window.radishCloseModalDirect(e);
         }
     });
 
-    function closeModal() {
-        window.radishCloseModalDirect();
-    }
-
-    $btnRescan.on('click', function () {
+    $('#btn-modal-rescan').on('click', function () {
         triggerScan();
     });
 
@@ -112,13 +104,13 @@ jQuery(document).ready(function ($) {
         }
     });
 
-    $btnCloseLightbox.on('click', function (e) {
+    $(document).on('click', '#btn-close-lightbox', function (e) {
         e.stopPropagation();
         closeLightbox();
     });
 
     $lightbox.on('click', function (e) {
-        if ($(e.target).is('#radish-lightbox-modal') || $(e.target).is('.radish-lightbox-container') || $(e.target).is('.radish-lightbox-img-wrap')) {
+        if ($(e.target).is('#radish-lightbox-modal') || $(e.target).hasClass('radish-lightbox-overlay') || $(e.target).hasClass('radish-lightbox-container') || $(e.target).hasClass('radish-lightbox-img-wrap')) {
             closeLightbox();
         }
     });
@@ -132,45 +124,29 @@ jQuery(document).ready(function ($) {
     // 3. Scan Media Library
     // -------------------------------------------------------------
     function triggerScan() {
-        var $loading = $('#modal-loading-state');
-        var $tbl = $('#radish-modal-table');
-        var $tb = $('#scanned-media-tbody');
-        var $btn = $('#btn-start-bulk');
+        $loadingState.show();
+        $table.hide();
+        $tbody.empty();
+        $btnStart.prop('disabled', true);
 
-        $loading.show();
-        $tbl.hide();
-        $tb.empty();
-        if ($btn.length) $btn.prop('disabled', true);
+        $.post(radishWebpData.ajaxUrl, {
+            action: 'radish_webp_scan_detailed_media',
+            nonce: radishWebpData.nonce
+        }, function (res) {
+            $loadingState.hide();
+            $table.show();
 
-        var ajaxUrl = (typeof radishWebpData !== 'undefined' && radishWebpData.ajaxUrl) ? radishWebpData.ajaxUrl : (window.ajaxurl || '/wp-admin/admin-ajax.php');
-        var nonce = (typeof radishWebpData !== 'undefined' && radishWebpData.nonce) ? radishWebpData.nonce : '';
-
-        $.ajax({
-            url: ajaxUrl,
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                action: 'radish_webp_scan_detailed_media',
-                nonce: nonce
-            },
-            success: function (res) {
-                $loading.hide();
-                $tbl.show();
-
-                if (res && res.success && res.data && res.data.items) {
-                    scannedItems = res.data.items;
-                    $('#total-scanned-count').text(res.data.total || scannedItems.length);
-                    renderTable(scannedItems);
-                } else {
-                    var msg = (res && res.data && res.data.message) ? res.data.message : (s.scanFailed || 'Scan failed');
-                    $tb.html('<tr><td colspan="6" style="text-align:center; padding:30px; color:#ef4444; font-size:14px;">❌ ' + msg + '</td></tr>');
-                }
-            },
-            error: function (xhr, status, err) {
-                $loading.hide();
-                $tbl.show();
-                $tb.html('<tr><td colspan="6" style="text-align:center; padding:30px; color:#ef4444; font-size:14px;">❌ Network / Server Error: ' + (xhr.status || status) + ' ' + (xhr.responseText || err || '') + '</td></tr>');
+            if (res.success && res.data && res.data.items) {
+                scannedItems = res.data.items;
+                $totalCount.text(res.data.total);
+                renderTable(scannedItems);
+            } else {
+                alert((res.data && res.data.message) || s.scanFailed || 'Scan failed');
             }
+        }).fail(function () {
+            $loadingState.hide();
+            $table.show();
+            alert(s.scanFailed || 'Scan failed, please check network connection');
         });
     }
 
@@ -195,26 +171,20 @@ jQuery(document).ready(function ($) {
                 ? '<span class="badge badge-success" style="font-size:11px;">' + genBadge + '</span>' 
                 : '<span class="badge badge-danger" style="font-size:11px;">' + notGenBadge + '</span>';
 
-            var origHtml = '';
-            if (item.orig_saved_pct && item.orig_saved_pct > 0) {
-                origHtml = '<del style="color:#94a3b8; font-size:12px;">' + (item.initial_size_str || '') + '</del> → <strong style="color:#2563eb;">' + (item.current_orig_str || '') + '</strong> <span style="color:#2563eb; font-weight:700; font-size:11px;">(-' + item.orig_saved_pct + '%)</span>';
-            } else {
-                origHtml = '<strong>' + (item.current_orig_str || item.initial_size_str || '—') + '</strong>';
-            }
-
+            var origHtml = '<strong>' + (item.orig_size || '') + '</strong>';
             var webpHtml = item.has_webp && item.webp_size 
                 ? '<strong style="color:#008a20; font-weight:700;">' + item.webp_size + '</strong>' 
                 : '<span style="color:#a7aaad;">—</span>';
 
-            var previewUrl = item.full_img || item.thumb || '';
+            var previewUrl = item.full_img || item.thumb;
             var thumbImg = item.thumb 
-                ? '<img src="' + item.thumb + '" data-full-url="' + previewUrl + '" data-title="' + (item.title || '') + '" class="visil-thumb-img" title="' + hoverText + '">' 
+                ? '<img src="' + item.thumb + '" data-full-url="' + previewUrl + '" data-title="' + item.title + '" class="visil-thumb-img" title="' + hoverText + '">' 
                 : '<span style="font-size:24px;">🖼️</span>';
 
             rowsHtml += '<tr id="scan-row-' + item.id + '" class="row-selected" data-has-webp="' + (item.has_webp ? '1' : '0') + '">' +
                 '<td style="text-align:center;"><input type="checkbox" class="media-check-item" value="' + item.id + '" checked></td>' +
                 '<td style="text-align:center;">' + thumbImg + '</td>' +
-                '<td><strong style="color:#1d2327; font-size:13px; line-height:1.4;">' + (item.title || '') + '</strong><br><small style="color:#8c8f94;">' + datePrefix + ' ' + (item.date || '') + ' (ID: ' + item.id + ')</small></td>' +
+                '<td><strong style="color:#1d2327; font-size:13px; line-height:1.4;">' + item.title + '</strong><br><small style="color:#8c8f94;">' + datePrefix + ' ' + item.date + ' (ID: ' + item.id + ')</small></td>' +
                 '<td id="orig-size-' + item.id + '">' + origHtml + '</td>' +
                 '<td id="webp-size-' + item.id + '">' + webpHtml + '</td>' +
                 '<td id="status-cell-' + item.id + '" style="text-align:center;">' + badgeHtml + '</td>' +
@@ -238,10 +208,12 @@ jQuery(document).ready(function ($) {
     // -------------------------------------------------------------
     $(document).on('click', '.visil-modal-table tbody tr', function (e) {
         if ($(e.target).closest('.visil-thumb-img').length) {
-            return; // 缩略图触发大图预览
+            return; // 缩略图触发大图预览，不切换勾选
         }
+
         if ($(e.target).is('.media-check-item')) {
-            $(this).toggleClass('row-selected', $(e.target).is(':checked'));
+            var checked = $(e.target).is(':checked');
+            $(this).toggleClass('row-selected', checked);
             updateSelectedCount();
             return;
         }
@@ -281,10 +253,6 @@ jQuery(document).ready(function ($) {
             $row.toggleClass('row-selected', shouldCheck);
         });
         updateSelectedCount();
-    });
-
-    $('#btn-close-modal-footer').on('click', function () {
-        closeModal();
     });
 
     // -------------------------------------------------------------
@@ -353,18 +321,14 @@ jQuery(document).ready(function ($) {
             do_opt_orig: doOptOrig,
             do_gen_webp: doGenWebp,
             skip_exists: 0
+        }, function (res) {
             if (res.success) {
                 $statusCell.html('<span class="badge badge-success" style="font-size:11px;">✔ ' + (s.generated || 'Done') + '</span>');
-                if (res.data) {
-                    if (res.data.orig_saved_pct > 0) {
-                        $origCell.html('<del style="color:#94a3b8; font-size:12px;">' + res.data.initial_orig_str + '</del> → <strong style="color:#2563eb;">' + res.data.new_orig_size + '</strong> <span style="color:#2563eb; font-weight:700; font-size:11px;">(-' + res.data.orig_saved_pct + '%)</span>');
-                    } else if (res.data.new_orig_size) {
-                        $origCell.html('<strong>' + res.data.new_orig_size + '</strong>');
-                    }
-
-                    if (res.data.new_webp_size) {
-                        $webpCell.html('<strong style="color:#008a20; font-weight:700;">' + res.data.new_webp_size + '</strong>');
-                    }
+                if (res.data && res.data.new_orig_size) {
+                    $origCell.html('<strong>' + res.data.new_orig_size + '</strong>');
+                }
+                if (res.data && res.data.new_webp_size) {
+                    $webpCell.html('<strong style="color:#008a20; font-weight:700;">' + res.data.new_webp_size + '</strong>');
                 }
                 $('#scan-row-' + currentId).attr('data-has-webp', '1');
             } else {
