@@ -304,6 +304,9 @@ msgstr ""
 msgid "Slim Original"
 msgstr ""
 
+msgid "Generate WebP"
+msgstr ""
+
 msgid "No metadata found"
 msgstr ""
 

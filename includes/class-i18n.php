@@ -108,6 +108,7 @@ class Radish_WebP_I18n {
         'Please select at least one task (Slim Original or Generate WebP).' => '请至少勾选一项处理项目（原图瘦身 或 生成 WebP）！',
         'Actions:' => '处理项目:',
         'Slim Original' => '原图自身瘦身',
+        'Generate WebP' => '生成 WebP 副本',
         'No metadata found' => '未找到图片元数据',
         'WebP exists, skipped' => '已存在 WebP，已跳过',
         'Processed successfully' => '处理完成',

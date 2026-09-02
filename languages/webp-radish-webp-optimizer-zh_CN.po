@@ -304,6 +304,9 @@ msgstr "处理项目:"
 msgid "Slim Original"
 msgstr "原图自身瘦身"
 
+msgid "Generate WebP"
+msgstr "生成 WebP 副本"
+
 msgid "No metadata found"
 msgstr "未找到图片元数据"
 

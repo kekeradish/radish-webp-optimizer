@@ -208,23 +208,27 @@ jQuery(document).ready(function ($) {
         updateSelectedCount();
     });
 
-    $('#btn-select-all').on('click', function () {
+    $('#btn-modal-select-all, #btn-select-all').on('click', function () {
         $('.media-check-item').prop('checked', true);
         updateSelectedCount();
     });
 
-    $('#btn-select-none').on('click', function () {
+    $('#btn-modal-deselect-all, #btn-select-none').on('click', function () {
         $('.media-check-item').prop('checked', false);
         updateSelectedCount();
     });
 
-    $('#btn-select-unconverted').on('click', function () {
+    $('#btn-modal-select-unconverted, #btn-select-unconverted').on('click', function () {
         $('.media-check-item').each(function () {
             var $row = $(this).closest('tr');
             var hasWebp = $row.data('has-webp') === 1 || $row.data('has-webp') === '1';
             $(this).prop('checked', !hasWebp);
         });
         updateSelectedCount();
+    });
+
+    $('#btn-close-modal-footer').on('click', function () {
+        closeModal();
     });
 
     // -------------------------------------------------------------
@@ -241,11 +245,11 @@ jQuery(document).ready(function ($) {
             return;
         }
 
-        var doOptOrig = $('#bulk_opt_orig').is(':checked') ? 1 : 0;
-        var doGenWebp = $('#bulk_gen_webp').is(':checked') ? 1 : 0;
+        var doOptOrig = ($('#modal-task-opt-orig').length ? $('#modal-task-opt-orig').is(':checked') : $('#bulk_opt_orig').is(':checked')) ? 1 : 0;
+        var doGenWebp = ($('#modal-task-gen-webp').length ? $('#modal-task-gen-webp').is(':checked') : $('#bulk_gen_webp').is(':checked')) ? 1 : 0;
 
         if (!doOptOrig && !doGenWebp) {
-            alert(s.noOptionSelected || 'Please select at least one action!');
+            alert(s.noOptionSelected || 'Please select at least one task (Slim Original or Generate WebP)!');
             return;
         }
 
