@@ -567,18 +567,23 @@ class Radish_WebP_Admin {
                 </div>
 
                 <div class="visil-modal-footer">
-                    <div class="visil-footer-left" style="display:flex; align-items:center; gap:16px;">
-                        <div style="font-size:13.5px; color:#334155;">
+                    <div class="visil-footer-left">
+                        <div style="font-size:13.5px; color:#334155; font-weight:600; white-space:nowrap;">
                             <?php echo radish_esc_html_t('Selected:'); ?> <strong id="selected-count" style="color:var(--radish-primary); font-size:16px;">0</strong> / <span id="total-scanned-count">0</span>
                         </div>
-                        <div id="bulk-progress-container" style="display:none; width:260px;">
-                            <div class="progress-bar-bg"><div id="bulk-progress-bar" class="progress-bar-fill" style="width:0%;"></div></div>
-                            <div class="progress-status"><span id="bulk-progress-text"><?php echo radish_esc_html_t('Optimizing...'); ?></span><span id="bulk-progress-percent">0%</span></div>
+                        <div id="bulk-progress-container" class="radish-progress-card" style="display:none;">
+                            <div class="progress-status-row">
+                                <span id="bulk-progress-text"><?php echo radish_esc_html_t('Optimizing...'); ?></span>
+                                <span id="bulk-progress-percent" class="progress-percent-badge">0%</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div id="bulk-progress-bar" class="progress-bar-fill" style="width:0%;"></div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="visil-footer-right" style="display:flex; gap:10px;">
-                        <button id="btn-start-bulk" type="button" class="button button-primary" style="font-weight:700; height:38px; line-height:36px; padding:0 24px !important; border-radius:8px;">
+                    <div class="visil-footer-right" style="display:flex; gap:10px; flex-shrink:0;">
+                        <button id="btn-start-bulk" type="button" class="button button-primary" style="font-weight:700; height:38px; line-height:36px; padding:0 24px !important; border-radius:8px; white-space:nowrap;">
                             ⚡ <?php echo radish_esc_html_t('Start Bulk Optimization'); ?> (<span id="btn-selected-count">0</span>)
                         </button>
                         <button id="btn-close-modal-footer" type="button" class="button" style="height:38px; line-height:36px; border-radius:8px;">

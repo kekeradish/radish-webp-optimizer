@@ -172,7 +172,7 @@ jQuery(document).ready(function ($) {
                 ? '<img src="' + item.thumb + '" data-full-url="' + previewUrl + '" data-title="' + item.title + '" class="visil-thumb-img" title="' + hoverText + '">' 
                 : '<span style="font-size:24px;">🖼️</span>';
 
-            var tr = '<tr id="scan-row-' + item.id + '" data-has-webp="' + (item.has_webp ? '1' : '0') + '">' +
+            var tr = '<tr id="scan-row-' + item.id + '" class="row-selected" data-has-webp="' + (item.has_webp ? '1' : '0') + '">' +
                 '<td style="text-align:center;"><input type="checkbox" class="media-check-item" value="' + item.id + '" checked></td>' +
                 '<td style="text-align:center;">' + thumbImg + '</td>' +
                 '<td><strong style="color:#1d2327; font-size:13px; line-height:1.4;">' + item.title + '</strong><br><small style="color:#8c8f94;">' + datePrefix + ' ' + item.date + ' (ID: ' + item.id + ')</small></td>' +
@@ -196,25 +196,41 @@ jQuery(document).ready(function ($) {
     }
 
     // -------------------------------------------------------------
-    // 4. Checkbox Controls
+    // 4. Row Click & Checkbox Controls (整行点击直接触发勾选)
     // -------------------------------------------------------------
-    $thSelectAll.on('change', function () {
-        var checked = $(this).is(':checked');
-        $('.media-check-item').prop('checked', checked);
+    $(document).on('click', '.visil-modal-table tbody tr', function (e) {
+        if ($(e.target).closest('.visil-thumb-img').length) {
+            return; // 缩略图触发大图预览
+        }
+        if ($(e.target).is('.media-check-item')) {
+            $(this).toggleClass('row-selected', $(e.target).is(':checked'));
+            updateSelectedCount();
+            return;
+        }
+
+        var $cb = $(this).find('.media-check-item');
+        var isChecked = !$cb.is(':checked');
+        $cb.prop('checked', isChecked);
+        $(this).toggleClass('row-selected', isChecked);
         updateSelectedCount();
     });
 
-    $(document).on('change', '.media-check-item', function () {
+    $thSelectAll.on('change', function () {
+        var checked = $(this).is(':checked');
+        $('.media-check-item').prop('checked', checked);
+        $('.visil-modal-table tbody tr').toggleClass('row-selected', checked);
         updateSelectedCount();
     });
 
     $('#btn-modal-select-all, #btn-select-all').on('click', function () {
         $('.media-check-item').prop('checked', true);
+        $('.visil-modal-table tbody tr').addClass('row-selected');
         updateSelectedCount();
     });
 
     $('#btn-modal-deselect-all, #btn-select-none').on('click', function () {
         $('.media-check-item').prop('checked', false);
+        $('.visil-modal-table tbody tr').removeClass('row-selected');
         updateSelectedCount();
     });
 
@@ -222,7 +238,9 @@ jQuery(document).ready(function ($) {
         $('.media-check-item').each(function () {
             var $row = $(this).closest('tr');
             var hasWebp = $row.data('has-webp') === 1 || $row.data('has-webp') === '1';
-            $(this).prop('checked', !hasWebp);
+            var shouldCheck = !hasWebp;
+            $(this).prop('checked', shouldCheck);
+            $row.toggleClass('row-selected', shouldCheck);
         });
         updateSelectedCount();
     });
@@ -256,21 +274,21 @@ jQuery(document).ready(function ($) {
         totalItems = queue.length;
         processedCount = 0;
 
-        $btnStart.prop('disabled', true).text(s.processing || 'Optimizing...');
-        $progressContainer.show();
-        $progressBar.css('width', '0%');
+        $btnStart.prop('disabled', true).html('⚡ ' + (s.processing || 'Optimizing...') + ' (<span id="btn-selected-count">' + totalItems + '</span>)');
+        $progressContainer.fadeIn(200);
+        $progressBar.css('width', '0%').css('background', 'linear-gradient(90deg, var(--radish-primary) 0%, #3b82f6 100%)');
         $progressPercent.text('0%');
-        $progressText.text((s.processing || 'Optimizing...') + ' (' + totalItems + ')');
+        $progressText.text((s.processing || 'Optimizing...') + ' (0/' + totalItems + ')');
 
         processNext();
     });
 
     function processNext() {
         if (queue.length === 0) {
-            $progressBar.css('width', '100%');
+            $progressBar.css('width', '100%').css('background', 'linear-gradient(90deg, #10b981 0%, #059669 100%)');
             $progressPercent.text('100%');
             $progressText.text(s.completed || '🎉 All selected images have been optimized successfully!');
-            $btnStart.prop('disabled', false).text(s.reOptimizeBtn || 'Re-optimize selected images');
+            $btnStart.prop('disabled', false).html('⚡ ' + (s.start || 'Start Bulk Optimization') + ' (<span id="btn-selected-count">' + $('.media-check-item:checked').length + '</span>)');
             return;
         }
 
