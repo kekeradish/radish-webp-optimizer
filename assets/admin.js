@@ -190,7 +190,7 @@ jQuery(document).ready(function ($) {
                 ? '<span class="badge badge-success" style="font-size:11px;">' + genBadge + '</span>' 
                 : '<span class="badge badge-danger" style="font-size:11px;">' + notGenBadge + '</span>';
 
-            var origHtml = '<strong>' + (item.orig_size || '') + '</strong>';
+            var origHtml = item.orig_size || '—';
             var webpHtml = item.has_webp && item.webp_size 
                 ? '<strong style="color:#008a20; font-weight:700;">' + item.webp_size + '</strong>' 
                 : '<span style="color:#a7aaad;">—</span>';
@@ -345,7 +345,7 @@ jQuery(document).ready(function ($) {
             if (res.success) {
                 $statusCell.html('<span class="badge badge-success" style="font-size:11px;">✔ ' + (s.generated || 'Done') + '</span>');
                 if (res.data && res.data.new_orig_size) {
-                    $origCell.html('<strong>' + res.data.new_orig_size + '</strong>');
+                    $origCell.html(res.data.new_orig_size);
                 }
                 if (res.data && res.data.new_webp_size) {
                     $webpCell.html('<strong style="color:#008a20; font-weight:700;">' + res.data.new_webp_size + '</strong>');
