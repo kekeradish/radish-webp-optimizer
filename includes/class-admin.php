@@ -54,6 +54,8 @@ class Radish_WebP_Admin {
         $output['optimize_original'] = !empty($input['optimize_original']) ? 1 : 0;
         $output['backup_original']   = !empty($input['backup_original']) ? 1 : 0;
         
+        $output['plugin_lang'] = isset($input['plugin_lang']) && in_array($input['plugin_lang'], array('auto', 'zh_CN', 'en_US'), true) ? $input['plugin_lang'] : 'auto';
+
         $quality = isset($input['quality']) ? intval($input['quality']) : 80;
         $output['quality'] = max(1, min(100, $quality));
 
@@ -336,6 +338,18 @@ class Radish_WebP_Admin {
                             settings_fields('radish_webp_settings_group');
                             ?>
                             <table class="form-table">
+                                <tr>
+                                    <th scope="row"><?php echo esc_html__('Interface Language', 'webp-radish-webp-optimizer'); ?></th>
+                                    <td>
+                                        <select name="radish_webp_settings[plugin_lang]" style="min-width: 220px;">
+                                            <option value="auto" <?php selected('auto', isset($settings['plugin_lang']) ? $settings['plugin_lang'] : 'auto'); ?>><?php echo esc_html__('Auto (Follow Site Language)', 'webp-radish-webp-optimizer'); ?></option>
+                                            <option value="zh_CN" <?php selected('zh_CN', isset($settings['plugin_lang']) ? $settings['plugin_lang'] : 'auto'); ?>>🇨🇳 简体中文 (Simplified Chinese)</option>
+                                            <option value="en_US" <?php selected('en_US', isset($settings['plugin_lang']) ? $settings['plugin_lang'] : 'auto'); ?>>🇺🇸 English (US)</option>
+                                        </select>
+                                        <p class="description"><?php echo esc_html__('Select the display language for the plugin settings and batch workbench.', 'webp-radish-webp-optimizer'); ?></p>
+                                    </td>
+                                </tr>
+
                                 <tr>
                                     <th scope="row"><?php echo esc_html__('Enable Plugin Features', 'webp-radish-webp-optimizer'); ?></th>
                                     <td>

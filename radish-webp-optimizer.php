@@ -51,6 +51,7 @@ final class Radish_WebP_Master {
 
     private function init_hooks() {
         register_activation_hook(__FILE__, array($this, 'activate'));
+        add_filter('plugin_locale', array($this, 'filter_plugin_locale'), 10, 2);
         add_action('init', array($this, 'load_textdomain'));
 
         $this->converter      = new Radish_WebP_Engine();
@@ -59,13 +60,33 @@ final class Radish_WebP_Master {
         $this->bulk_processor = new Radish_WebP_Bulk_Processor();
     }
 
+    public function filter_plugin_locale($locale, $domain) {
+        if ($domain === 'webp-radish-webp-optimizer') {
+            $settings = get_option('radish_webp_settings');
+            if (!empty($settings['plugin_lang']) && $settings['plugin_lang'] !== 'auto') {
+                return $settings['plugin_lang'];
+            }
+        }
+        return $locale;
+    }
+
     public function load_textdomain() {
+        $settings = get_option('radish_webp_settings');
+        $lang = !empty($settings['plugin_lang']) ? $settings['plugin_lang'] : 'auto';
+
+        if ($lang === 'en_US') {
+            // 强制英文，卸载中文 mo
+            unload_textdomain('webp-radish-webp-optimizer');
+            return;
+        }
+
         load_plugin_textdomain('webp-radish-webp-optimizer', false, dirname(plugin_basename(__FILE__)) . '/languages');
     }
 
     public function activate() {
         $default_options = array(
             'enabled'           => 1,
+            'plugin_lang'       => 'auto',
             'quality'           => 80,
             'delivery_mode'     => 'picture',
             'convert_on_upload' => 1,
