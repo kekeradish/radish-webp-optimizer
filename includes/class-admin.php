@@ -355,8 +355,8 @@ class Radish_WebP_Admin {
                                 <div class="radish-form-control">
                                     <select name="radish_webp_settings[plugin_lang]" style="min-width: 170px; border-radius: 8px; font-size:13px;">
                                         <option value="auto" <?php selected('auto', isset($settings['plugin_lang']) ? $settings['plugin_lang'] : 'auto'); ?>><?php echo esc_html__('Auto (Follow Site Language)', 'webp-radish-webp-optimizer'); ?></option>
-                                        <option value="zh_CN" <?php selected('zh_CN', isset($settings['plugin_lang']) ? $settings['plugin_lang'] : 'auto'); ?>>🇨🇳 简体中文</option>
-                                        <option value="en_US" <?php selected('en_US', isset($settings['plugin_lang']) ? $settings['plugin_lang'] : 'auto'); ?>>🇺🇸 English (US)</option>
+                                        <option value="zh_CN" <?php selected('zh_CN', isset($settings['plugin_lang']) ? $settings['plugin_lang'] : 'auto'); ?>><?php echo esc_html__('Simplified Chinese', 'webp-radish-webp-optimizer'); ?> (zh_CN)</option>
+                                        <option value="en_US" <?php selected('en_US', isset($settings['plugin_lang']) ? $settings['plugin_lang'] : 'auto'); ?>><?php echo esc_html__('English', 'webp-radish-webp-optimizer'); ?> (en_US)</option>
                                     </select>
                                 </div>
                             </div>

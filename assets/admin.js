@@ -36,6 +36,13 @@ jQuery(document).ready(function ($) {
     var $btnCloseLightbox = $('#btn-close-lightbox');
 
     // -------------------------------------------------------------
+    // 0. Language Switcher Auto-submit
+    // -------------------------------------------------------------
+    $('select[name="radish_webp_settings[plugin_lang]"]').on('change', function () {
+        $(this).closest('form').submit();
+    });
+
+    // -------------------------------------------------------------
     // 1. Modal Open / Close
     // -------------------------------------------------------------
     $btnOpenModal.on('click', function () {

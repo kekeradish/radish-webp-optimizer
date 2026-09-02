@@ -52,6 +52,9 @@ final class Radish_WebP_Master {
     private function init_hooks() {
         register_activation_hook(__FILE__, array($this, 'activate'));
         add_filter('plugin_locale', array($this, 'filter_plugin_locale'), 10, 2);
+        
+        // 尽早加载多语言
+        $this->load_textdomain();
         add_action('init', array($this, 'load_textdomain'));
 
         $this->converter      = new Radish_WebP_Engine();
@@ -75,11 +78,21 @@ final class Radish_WebP_Master {
         $lang = !empty($settings['plugin_lang']) ? $settings['plugin_lang'] : 'auto';
 
         if ($lang === 'en_US') {
-            // 强制英文，卸载中文 mo
+            // 强制英文：卸载 mo 文件，源码直接输出纯英文
             unload_textdomain('webp-radish-webp-optimizer');
             return;
         }
 
+        if ($lang === 'zh_CN') {
+            // 强制加载简体中文语言包
+            $mo_file = RADISH_WEBP_PATH . 'languages/webp-radish-webp-optimizer-zh_CN.mo';
+            if (file_exists($mo_file)) {
+                load_textdomain('webp-radish-webp-optimizer', $mo_file);
+                return;
+            }
+        }
+
+        // 跟随站点语言
         load_plugin_textdomain('webp-radish-webp-optimizer', false, dirname(plugin_basename(__FILE__)) . '/languages');
     }
 

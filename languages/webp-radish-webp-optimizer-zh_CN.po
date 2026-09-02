@@ -327,3 +327,31 @@ msgstr "选择插件管理后台、弹窗工作台与操作提示的界面语言
 
 msgid "Engine Active"
 msgstr "引擎运行中"
+
+msgid "Simplified Chinese"
+msgstr "简体中文"
+
+msgid "English"
+msgstr "英文"
+
+msgid "No metadata found"
+msgstr "未找到图片元数据"
+
+msgid "WebP exists, skipped"
+msgstr "已存在 WebP，已跳过"
+
+msgid "Processed successfully"
+msgstr "处理完成"
+
+msgid "Invalid file path"
+msgstr "无效的文件路径"
+
+msgid "No Horizontal Scroll"
+msgstr "全屏宽阔视野"
+
+msgid "Lightbox Large Preview"
+msgstr "大图灯箱预览"
+
+msgid "Batch Selection"
+msgstr "精准批量选择"
+

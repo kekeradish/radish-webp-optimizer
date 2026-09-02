@@ -21,7 +21,7 @@ class Radish_WebP_Bulk_Processor {
         check_ajax_referer('radish_webp_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => '权限不足'));
+            wp_send_json_error(array('message' => __('Permission denied', 'webp-radish-webp-optimizer')));
         }
 
         $query_args = array(
@@ -84,12 +84,12 @@ class Radish_WebP_Bulk_Processor {
         check_ajax_referer('radish_webp_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => '权限不足'));
+            wp_send_json_error(array('message' => __('Permission denied', 'webp-radish-webp-optimizer')));
         }
 
         $attachment_id = isset($_POST['attachment_id']) ? intval($_POST['attachment_id']) : 0;
         if (!$attachment_id) {
-            wp_send_json_error(array('message' => '无效的附件 ID'));
+            wp_send_json_error(array('message' => __('Invalid attachment ID', 'webp-radish-webp-optimizer')));
         }
 
         $do_opt_orig  = isset($_POST['do_opt_orig']) ? intval($_POST['do_opt_orig']) : 1;
@@ -98,13 +98,13 @@ class Radish_WebP_Bulk_Processor {
 
         $metadata = wp_get_attachment_metadata($attachment_id);
         if (empty($metadata)) {
-            wp_send_json_error(array('message' => '未找到元数据'));
+            wp_send_json_error(array('message' => __('No metadata found', 'webp-radish-webp-optimizer')));
         }
 
         $engine = new Radish_WebP_Engine();
         $settings = get_option('radish_webp_settings', array());
         $quality = isset($settings['quality']) ? intval($settings['quality']) : 80;
-        $orig_quality = isset($settings['orig_quality']) ? intval($settings['orig_quality']) : 85;
+        $orig_quality = isset($settings['orig_quality']) ? intval($settings['orig_quality']) : 82;
         $max_dimension = isset($settings['max_dimension']) ? intval($settings['max_dimension']) : 2560;
         $backup = !empty($settings['backup_original']);
 
@@ -121,7 +121,7 @@ class Radish_WebP_Bulk_Processor {
                     wp_send_json_success(array(
                         'attachment_id'   => $attachment_id,
                         'skipped'         => true,
-                        'message'         => '已存在 WebP，已跳过'
+                        'message'         => __('WebP exists, skipped', 'webp-radish-webp-optimizer')
                     ));
                 }
 
@@ -138,34 +138,28 @@ class Radish_WebP_Bulk_Processor {
                     $opt_orig_done = true;
                 }
 
-                // 2. 生成 WebP
+                // 2. 主图 WebP 转换
                 if ($do_gen_webp) {
-                    if (!$skip_exists || !file_exists($webp_original) || $do_opt_orig) {
-                        $res = $engine->convert_file_to_webp($original_path, $quality);
-                        if ($res) {
-                            $converted_count++;
-                        }
+                    $res = $engine->convert_file_to_webp($original_path, $quality);
+                    if ($res) {
+                        $converted_count++;
                     }
                 }
             }
-        }
 
-        // 处理缩略图尺寸
-        if (!empty($metadata['sizes']) && is_array($metadata['sizes'])) {
-            $base_dir = dirname($original_path);
-            foreach ($metadata['sizes'] as $size_info) {
-                if (!empty($size_info['file'])) {
-                    $thumb_path = path_join($base_dir, $size_info['file']);
-                    $webp_thumb = preg_replace('/\.(jpe?g|png)$/i', '.webp', $thumb_path);
-
-                    if (file_exists($thumb_path)) {
-                        if ($do_opt_orig) {
-                            $engine->optimize_original_file($thumb_path, $orig_quality, 0, false);
-                        }
-                        if ($do_gen_webp) {
-                            if (!$skip_exists || !file_exists($webp_thumb) || $do_opt_orig) {
-                                $res = $engine->convert_file_to_webp($thumb_path, $quality);
-                                if ($res) {
+            // 3. 处理所有尺寸缩略图
+            if (!empty($metadata['sizes']) && is_array($metadata['sizes'])) {
+                $base_dir = dirname($original_path);
+                foreach ($metadata['sizes'] as $size_info) {
+                    if (!empty($size_info['file'])) {
+                        $thumb_path = path_join($base_dir, $size_info['file']);
+                        if (file_exists($thumb_path)) {
+                            if ($do_opt_orig) {
+                                $engine->optimize_original_file($thumb_path, $orig_quality, 0, false);
+                            }
+                            if ($do_gen_webp) {
+                                $res_t = $engine->convert_file_to_webp($thumb_path, $quality);
+                                if ($res_t) {
                                     $converted_count++;
                                 }
                             }
@@ -173,17 +167,20 @@ class Radish_WebP_Bulk_Processor {
                     }
                 }
             }
+
+            $new_orig_size_str = file_exists($original_path) ? size_format(filesize($original_path), 1) : '';
+            $new_webp_size_str = file_exists($webp_original) ? size_format(filesize($webp_original), 1) : '';
+
+            wp_send_json_success(array(
+                'attachment_id'   => $attachment_id,
+                'opt_orig_done'   => $opt_orig_done,
+                'converted_count' => $converted_count,
+                'new_orig_size'   => $new_orig_size_str,
+                'new_webp_size'   => $new_webp_size_str,
+                'message'         => __('Processed successfully', 'webp-radish-webp-optimizer')
+            ));
         }
 
-        $new_orig_size = file_exists($original_path) ? size_format(filesize($original_path), 1) : '';
-        $new_webp_size = file_exists($webp_original) ? size_format(filesize($webp_original), 1) : '';
-
-        wp_send_json_success(array(
-            'attachment_id'   => $attachment_id,
-            'converted_files' => $converted_count,
-            'opt_orig_done'   => $opt_orig_done,
-            'new_orig_size'   => $new_orig_size,
-            'new_webp_size'   => $new_webp_size,
-        ));
+        wp_send_json_error(array('message' => __('Invalid file path', 'webp-radish-webp-optimizer')));
     }
 }
