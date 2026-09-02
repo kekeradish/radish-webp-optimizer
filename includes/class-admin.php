@@ -28,15 +28,15 @@ class Radish_WebP_Admin {
     }
 
     public function add_action_links($links) {
-        $settings_link = '<a href="' . admin_url('options-general.php?page=radish-webp-settings') . '">' . __('设置', 'radish-webp-optimizer') . '</a>';
+        $settings_link = '<a href="' . admin_url('options-general.php?page=radish-webp-settings') . '">' . __('设置', 'webp-radish-webp-optimizer') . '</a>';
         array_unshift($links, $settings_link);
         return $links;
     }
 
     public function register_admin_menu() {
         add_options_page(
-            __('🥕 萝卜 WebP 大师', 'radish-webp-optimizer'),
-            __('🥕 萝卜 WebP 大师', 'radish-webp-optimizer'),
+            __('🥕 萝卜 WebP 大师', 'webp-radish-webp-optimizer'),
+            __('🥕 萝卜 WebP 大师', 'webp-radish-webp-optimizer'),
             'manage_options',
             'radish-webp-settings',
             array($this, 'render_admin_page')
@@ -70,7 +70,7 @@ class Radish_WebP_Admin {
     }
 
     public function add_media_columns($columns) {
-        $columns['radish_webp_status'] = __('双重优化与单图操作', 'radish-webp-optimizer');
+        $columns['radish_webp_status'] = __('双重优化与单图操作', 'webp-radish-webp-optimizer');
         return $columns;
     }
 
@@ -200,7 +200,7 @@ class Radish_WebP_Admin {
         $html .= '</div>';
 
         $form_fields['radish_webp_info'] = array(
-            'label' => __('优化操作与详情', 'radish-webp-optimizer'),
+            'label' => __('优化操作与详情', 'webp-radish-webp-optimizer'),
             'input' => 'html',
             'html'  => $html,
         );
@@ -258,12 +258,12 @@ class Radish_WebP_Admin {
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce'   => wp_create_nonce('radish_webp_admin_nonce'),
             'strings' => array(
-                'start'      => __('开始批量转换', 'radish-webp-optimizer'),
-                'processing' => __('正在转换中...', 'radish-webp-optimizer'),
-                'completed'  => __('所有历史图片已成功完成双重优化与 WebP 转换！', 'radish-webp-optimizer'),
-                'error'      => __('操作过程中发生错误', 'radish-webp-optimizer'),
-                'optimizing' => __('正在优化...', 'radish-webp-optimizer'),
-                'restoring'  => __('正在恢复...', 'radish-webp-optimizer'),
+                'start'      => __('开始批量转换', 'webp-radish-webp-optimizer'),
+                'processing' => __('正在转换中...', 'webp-radish-webp-optimizer'),
+                'completed'  => __('所有历史图片已成功完成双重优化与 WebP 转换！', 'webp-radish-webp-optimizer'),
+                'error'      => __('操作过程中发生错误', 'webp-radish-webp-optimizer'),
+                'optimizing' => __('正在优化...', 'webp-radish-webp-optimizer'),
+                'restoring'  => __('正在恢复...', 'webp-radish-webp-optimizer'),
             )
         ));
     }

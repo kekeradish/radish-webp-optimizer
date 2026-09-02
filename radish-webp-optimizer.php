@@ -7,7 +7,7 @@
  * Author:            求知的萝卜
  * Author URI:        https://mp.weixin.qq.com
  * License:           GPL-2.0+
- * Text Domain:       radish-webp-optimizer
+ * Text Domain:       webp-radish-webp-optimizer
  * Domain Path:       /languages
  */
 

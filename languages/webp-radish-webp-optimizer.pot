@@ -1,0 +1,56 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 萝卜 WebP 大师 (Radish WebP Optimizer) 1.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/webp-radish-webp-optimizer\n"
+"POT-Creation-Date: 2026-09-02 17:30+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: 求知的萝卜\n"
+"Language-Team: 求知的萝卜\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.0\n"
+"X-Domain: webp-radish-webp-optimizer\n"
+
+#: includes/class-admin.php:31
+msgid "设置"
+msgstr ""
+
+#: includes/class-admin.php:38
+#: includes/class-admin.php:39
+msgid "🥕 萝卜 WebP 大师"
+msgstr ""
+
+#: includes/class-admin.php:71
+msgid "双重优化与单图操作"
+msgstr ""
+
+#: includes/class-admin.php:200
+msgid "优化操作与详情"
+msgstr ""
+
+#: includes/class-admin.php:261
+msgid "开始批量转换"
+msgstr ""
+
+#: includes/class-admin.php:262
+msgid "正在转换中..."
+msgstr ""
+
+#: includes/class-admin.php:263
+msgid "所有历史图片已成功完成双重优化与 WebP 转换！"
+msgstr ""
+
+#: includes/class-admin.php:264
+msgid "操作过程中发生错误"
+msgstr ""
+
+#: includes/class-admin.php:265
+msgid "正在优化..."
+msgstr ""
+
+#: includes/class-admin.php:266
+msgid "正在恢复..."
+msgstr ""

@@ -2,7 +2,7 @@
 Contributors: kekeradish
 Tags: webp, image optimizer, tinypng, compress images, speed up, performance, core web vitals, seo
 Requires at least: 5.0
-Tested up to: 6.7
+Tested up to: 7.1
 Requires PHP: 7.2
 Stable tag: 1.1.0
 License: GPLv2 or later
