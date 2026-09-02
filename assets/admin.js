@@ -162,9 +162,15 @@ jQuery(document).ready(function ($) {
                 ? '<span class="badge badge-success" style="font-size:11px;">' + genBadge + '</span>' 
                 : '<span class="badge badge-danger" style="font-size:11px;">' + notGenBadge + '</span>';
 
-            var origHtml = '<strong>' + item.orig_size + '</strong>';
+            var origHtml = '';
+            if (item.orig_saved_pct > 0) {
+                origHtml = '<del style="color:#94a3b8; font-size:12px;">' + item.initial_size_str + '</del> → <strong style="color:#2563eb;">' + item.current_orig_str + '</strong> <span style="color:#2563eb; font-weight:700; font-size:11px;">(-' + item.orig_saved_pct + '%)</span>';
+            } else {
+                origHtml = '<strong>' + item.current_orig_str + '</strong>';
+            }
+
             var webpHtml = item.has_webp && item.webp_size 
-                ? '<strong style="color:#008a20;">' + item.webp_size + '</strong>' 
+                ? '<strong style="color:#008a20; font-weight:700;">' + item.webp_size + '</strong>' 
                 : '<span style="color:#a7aaad;">—</span>';
 
             var previewUrl = item.full_img || item.thumb;
@@ -315,14 +321,18 @@ jQuery(document).ready(function ($) {
             do_opt_orig: doOptOrig,
             do_gen_webp: doGenWebp,
             skip_exists: 0
-        }, function (res) {
             if (res.success) {
                 $statusCell.html('<span class="badge badge-success" style="font-size:11px;">✔ ' + (s.generated || 'Done') + '</span>');
-                if (res.data && res.data.new_orig_size) {
-                    $origCell.html('<strong>' + res.data.new_orig_size + '</strong>');
-                }
-                if (res.data && res.data.new_webp_size) {
-                    $webpCell.html('<strong style="color:#008a20; font-weight:700;">' + res.data.new_webp_size + '</strong>');
+                if (res.data) {
+                    if (res.data.orig_saved_pct > 0) {
+                        $origCell.html('<del style="color:#94a3b8; font-size:12px;">' + res.data.initial_orig_str + '</del> → <strong style="color:#2563eb;">' + res.data.new_orig_size + '</strong> <span style="color:#2563eb; font-weight:700; font-size:11px;">(-' + res.data.orig_saved_pct + '%)</span>');
+                    } else if (res.data.new_orig_size) {
+                        $origCell.html('<strong>' + res.data.new_orig_size + '</strong>');
+                    }
+
+                    if (res.data.new_webp_size) {
+                        $webpCell.html('<strong style="color:#008a20; font-weight:700;">' + res.data.new_webp_size + '</strong>');
+                    }
                 }
                 $('#scan-row-' + currentId).attr('data-has-webp', '1');
             } else {

@@ -599,7 +599,7 @@ input:checked + .slider:before {
 }
 
 /* ==========================================================================
-   5. 高清大图灯箱预览 (Lightbox)
+   5. 高清大图灯箱预览 (Lightbox) - 彻底隐藏无残留
    ========================================================================== */
 .radish-lightbox-overlay {
     position: fixed;
@@ -607,23 +607,19 @@ input:checked + .slider:before {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(15, 23, 42, 0.9);
+    background: rgba(15, 23, 42, 0.88);
     backdrop-filter: blur(10px);
-    z-index: 999999;
-    display: flex;
+    z-index: 99999999 !important;
+    display: none !important; /* 默认彻底隐藏，杜绝任何页面底部残影 */
     align-items: center;
     justify-content: center;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     padding: 24px;
     box-sizing: border-box;
     cursor: zoom-out;
 }
 
 .radish-lightbox-overlay.active {
-    opacity: 1;
-    visibility: visible;
+    display: flex !important;
 }
 
 .radish-lightbox-container {
@@ -634,12 +630,12 @@ input:checked + .slider:before {
     flex-direction: column;
     align-items: center;
     cursor: default;
-    transform: scale(0.95);
-    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: radishPopIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.radish-lightbox-overlay.active .radish-lightbox-container {
-    transform: scale(1);
+@keyframes radishPopIn {
+    0% { transform: scale(0.92); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
 }
 
 .radish-lightbox-img-wrap img {
@@ -647,9 +643,9 @@ input:checked + .slider:before {
     max-height: 78vh;
     object-fit: contain;
     border-radius: 12px;
-    box-shadow: 0 25px 70px rgba(0,0,0,0.6);
+    box-shadow: 0 25px 70px rgba(0,0,0,0.7);
     background: #0f172a;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .radish-lightbox-caption {
@@ -658,19 +654,22 @@ input:checked + .slider:before {
     font-size: 14px;
     font-weight: 600;
     text-align: center;
+    background: rgba(15, 23, 42, 0.6);
+    padding: 4px 16px;
+    border-radius: 20px;
 }
 
 .radish-lightbox-close {
     position: absolute;
-    top: -38px;
+    top: -42px;
     right: 0;
     background: rgba(255, 255, 255, 0.2);
     border: none;
     color: #fff;
     font-size: 24px;
     line-height: 1;
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
@@ -680,5 +679,5 @@ input:checked + .slider:before {
 }
 
 .radish-lightbox-close:hover {
-    background: rgba(239, 68, 68, 0.8);
+    background: rgba(239, 68, 68, 0.85);
 }

@@ -21,7 +21,7 @@ class Radish_WebP_Bulk_Processor {
         check_ajax_referer('radish_webp_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Permission denied', 'webp-radish-webp-optimizer')));
+            wp_send_json_error(array('message' => radish_t('Permission denied')));
         }
 
         $query_args = array(
@@ -51,7 +51,12 @@ class Radish_WebP_Bulk_Processor {
             $webp_path = preg_replace('/\.(jpe?g|png)$/i', '.webp', $orig_path);
             $has_webp = file_exists($webp_path);
 
-            $orig_size = filesize($orig_path);
+            $current_orig_size = filesize($orig_path);
+            $initial_size = get_post_meta($post->ID, '_radish_initial_size', true);
+            if (!$initial_size || $initial_size < $current_orig_size) {
+                $initial_size = $current_orig_size;
+            }
+
             $webp_size = $has_webp ? filesize($webp_path) : 0;
             $thumb_src = wp_get_attachment_image_src($post->ID, 'thumbnail');
             $full_src  = wp_get_attachment_image_src($post->ID, 'large');
@@ -59,15 +64,22 @@ class Radish_WebP_Bulk_Processor {
                 $full_src = wp_get_attachment_image_src($post->ID, 'full');
             }
 
+            $orig_saved_pct = 0;
+            if ($initial_size > $current_orig_size) {
+                $orig_saved_pct = round((($initial_size - $current_orig_size) / $initial_size) * 100);
+            }
+
             $items[] = array(
-                'id'            => $post->ID,
-                'title'         => basename($meta['file']),
-                'thumb'         => !empty($thumb_src[0]) ? $thumb_src[0] : '',
-                'full_img'      => !empty($full_src[0]) ? $full_src[0] : '',
-                'orig_size'     => size_format($orig_size, 1),
-                'webp_size'     => $has_webp ? size_format($webp_size, 1) : '',
-                'has_webp'      => $has_webp,
-                'date'          => get_the_date('Y/m/d', $post->ID),
+                'id'                 => $post->ID,
+                'title'              => basename($meta['file']),
+                'thumb'              => !empty($thumb_src[0]) ? $thumb_src[0] : '',
+                'full_img'           => !empty($full_src[0]) ? $full_src[0] : '',
+                'initial_size_str'   => size_format($initial_size, 1),
+                'current_orig_str'   => size_format($current_orig_size, 1),
+                'orig_saved_pct'     => $orig_saved_pct,
+                'webp_size'          => $has_webp ? size_format($webp_size, 1) : '',
+                'has_webp'           => $has_webp,
+                'date'               => get_the_date('Y/m/d', $post->ID),
             );
         }
 
@@ -84,12 +96,12 @@ class Radish_WebP_Bulk_Processor {
         check_ajax_referer('radish_webp_admin_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Permission denied', 'webp-radish-webp-optimizer')));
+            wp_send_json_error(array('message' => radish_t('Permission denied')));
         }
 
         $attachment_id = isset($_POST['attachment_id']) ? intval($_POST['attachment_id']) : 0;
         if (!$attachment_id) {
-            wp_send_json_error(array('message' => __('Invalid attachment ID', 'webp-radish-webp-optimizer')));
+            wp_send_json_error(array('message' => radish_t('Invalid attachment ID')));
         }
 
         $do_opt_orig  = isset($_POST['do_opt_orig']) ? intval($_POST['do_opt_orig']) : 1;
@@ -98,7 +110,7 @@ class Radish_WebP_Bulk_Processor {
 
         $metadata = wp_get_attachment_metadata($attachment_id);
         if (empty($metadata)) {
-            wp_send_json_error(array('message' => __('No metadata found', 'webp-radish-webp-optimizer')));
+            wp_send_json_error(array('message' => radish_t('No metadata found')));
         }
 
         $engine = new Radish_WebP_Engine();
@@ -111,24 +123,25 @@ class Radish_WebP_Bulk_Processor {
         $upload_dir = wp_upload_dir();
         $converted_count = 0;
         $opt_orig_done = false;
+        $initial_size = 0;
 
         if (!empty($metadata['file'])) {
             $original_path = path_join($upload_dir['basedir'], $metadata['file']);
             $webp_original = preg_replace('/\.(jpe?g|png)$/i', '.webp', $original_path);
 
             if (file_exists($original_path)) {
-                if ($skip_exists && file_exists($webp_original) && !$do_opt_orig) {
-                    wp_send_json_success(array(
-                        'attachment_id'   => $attachment_id,
-                        'skipped'         => true,
-                        'message'         => __('WebP exists, skipped', 'webp-radish-webp-optimizer')
-                    ));
-                }
-
                 $initial_size = get_post_meta($attachment_id, '_radish_initial_size', true);
                 if (!$initial_size) {
                     $initial_size = filesize($original_path);
                     update_post_meta($attachment_id, '_radish_initial_size', $initial_size);
+                }
+
+                if ($skip_exists && file_exists($webp_original) && !$do_opt_orig) {
+                    wp_send_json_success(array(
+                        'attachment_id'   => $attachment_id,
+                        'skipped'         => true,
+                        'message'         => radish_t('WebP exists, skipped')
+                    ));
                 }
 
                 // 1. 原图瘦身
@@ -168,19 +181,28 @@ class Radish_WebP_Bulk_Processor {
                 }
             }
 
-            $new_orig_size_str = file_exists($original_path) ? size_format(filesize($original_path), 1) : '';
+            $current_filesize = file_exists($original_path) ? filesize($original_path) : 0;
+            $new_orig_size_str = size_format($current_filesize, 1);
+            $initial_size_str = size_format($initial_size > 0 ? $initial_size : $current_filesize, 1);
             $new_webp_size_str = file_exists($webp_original) ? size_format(filesize($webp_original), 1) : '';
 
+            $orig_saved_pct = 0;
+            if ($initial_size > $current_filesize) {
+                $orig_saved_pct = round((($initial_size - $current_filesize) / $initial_size) * 100);
+            }
+
             wp_send_json_success(array(
-                'attachment_id'   => $attachment_id,
-                'opt_orig_done'   => $opt_orig_done,
-                'converted_count' => $converted_count,
-                'new_orig_size'   => $new_orig_size_str,
-                'new_webp_size'   => $new_webp_size_str,
-                'message'         => __('Processed successfully', 'webp-radish-webp-optimizer')
+                'attachment_id'    => $attachment_id,
+                'opt_orig_done'    => $opt_orig_done,
+                'converted_count'  => $converted_count,
+                'initial_orig_str' => $initial_size_str,
+                'new_orig_size'    => $new_orig_size_str,
+                'orig_saved_pct'   => $orig_saved_pct,
+                'new_webp_size'    => $new_webp_size_str,
+                'message'          => radish_t('Processed successfully')
             ));
         }
 
-        wp_send_json_error(array('message' => __('Invalid file path', 'webp-radish-webp-optimizer')));
+        wp_send_json_error(array('message' => radish_t('Invalid file path')));
     }
 }
