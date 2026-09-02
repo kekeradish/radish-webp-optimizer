@@ -9,25 +9,38 @@ if (!defined('ABSPATH')) {
 
 class Radish_WebP_Engine {
 
-    private $settings;
-
     public function __construct() {
-        $this->settings = get_option('radish_webp_settings', array(
-            'enabled'           => 1,
-            'quality'           => 80,
-            'convert_on_upload' => 1,
-            'optimize_original' => 1,
-            'orig_quality'      => 85,
-            'max_dimension'     => 2560,
-            'backup_original'   => 0,
-        ));
+        $settings = $this->get_settings();
 
-        if (!empty($this->settings['enabled']) && !empty($this->settings['convert_on_upload'])) {
+        if (!empty($settings['enabled']) && !empty($settings['convert_on_upload'])) {
+            // 1. 上传第一瞬间拦截优化原图（在生成缩略图前）
+            add_filter('wp_handle_upload', array($this, 'handle_upload_pre_process'), 10, 2);
+            // 2. 生成缩略图与 WebP 副本
             add_filter('wp_generate_attachment_metadata', array($this, 'handle_attachment_upload'), 10, 2);
         }
 
         // 监听附件删除事件，清理 WebP 和备份文件
         add_action('delete_attachment', array($this, 'handle_delete_attachment'));
+    }
+
+    /**
+     * 获取最新配置
+     */
+    public function get_settings() {
+        $settings = get_option('radish_webp_settings');
+        if (empty($settings)) {
+            $settings = get_option('visil_webp_settings', array());
+        }
+
+        return wp_parse_args($settings, array(
+            'enabled'           => 1,
+            'quality'           => 80,
+            'convert_on_upload' => 1,
+            'optimize_original' => 1,
+            'orig_quality'      => 82,
+            'max_dimension'     => 2560,
+            'backup_original'   => 0,
+        ));
     }
 
     /**
@@ -54,7 +67,37 @@ class Radish_WebP_Engine {
     }
 
     /**
-     * 上传图片时进行双重优化
+     * 阶段 0：文件刚上传落盘时，立即对原始图片进行就地瘦身
+     */
+    public function handle_upload_pre_process($upload, $context = 'upload') {
+        if (!isset($upload['file']) || !isset($upload['type'])) {
+            return $upload;
+        }
+
+        $allowed_types = array('image/jpeg', 'image/png', 'image/jpg');
+        if (!in_array($upload['type'], $allowed_types, true)) {
+            return $upload;
+        }
+
+        $settings = $this->get_settings();
+        if (empty($settings['enabled']) || empty($settings['optimize_original'])) {
+            return $upload;
+        }
+
+        $file_path = $upload['file'];
+        if (file_exists($file_path)) {
+            $orig_quality = isset($settings['orig_quality']) ? intval($settings['orig_quality']) : 82;
+            $max_dimension = isset($settings['max_dimension']) ? intval($settings['max_dimension']) : 2560;
+            $backup = !empty($settings['backup_original']);
+
+            $this->optimize_original_file($file_path, $orig_quality, $max_dimension, $backup);
+        }
+
+        return $upload;
+    }
+
+    /**
+     * 阶段 1 & 2：上传元数据生成时，处理原图/大图补漏及生成所有 WebP 副本
      */
     public function handle_attachment_upload($metadata, $attachment_id) {
         $mime_type = get_post_mime_type($attachment_id);
@@ -64,14 +107,32 @@ class Radish_WebP_Engine {
             return $metadata;
         }
 
+        $settings = $this->get_settings();
+        if (empty($settings['enabled'])) {
+            return $metadata;
+        }
+
         $upload_dir = wp_upload_dir();
-        $quality = isset($this->settings['quality']) ? intval($this->settings['quality']) : 80;
-        $orig_quality = isset($this->settings['orig_quality']) ? intval($this->settings['orig_quality']) : 85;
-        $max_dimension = isset($this->settings['max_dimension']) ? intval($this->settings['max_dimension']) : 2560;
-        $backup = !empty($this->settings['backup_original']);
+        $quality = isset($settings['quality']) ? intval($settings['quality']) : 80;
+        $orig_quality = isset($settings['orig_quality']) ? intval($settings['orig_quality']) : 82;
+        $max_dimension = isset($settings['max_dimension']) ? intval($settings['max_dimension']) : 2560;
+        $backup = !empty($settings['backup_original']);
 
         if (isset($metadata['file'])) {
             $original_path = path_join($upload_dir['basedir'], $metadata['file']);
+            $base_dir = dirname($original_path);
+
+            // 处理 WordPress 5.3+ 的 original_image (未缩小前的母本)
+            if (!empty($metadata['original_image'])) {
+                $raw_orig_path = path_join($base_dir, $metadata['original_image']);
+                if (file_exists($raw_orig_path)) {
+                    if (!empty($settings['optimize_original'])) {
+                        $this->optimize_original_file($raw_orig_path, $orig_quality, $max_dimension, $backup);
+                    }
+                    $this->convert_file_to_webp($raw_orig_path, $quality);
+                }
+            }
+
             if (file_exists($original_path)) {
                 $initial_size = get_post_meta($attachment_id, '_radish_initial_size', true);
                 if (!$initial_size) {
@@ -79,25 +140,24 @@ class Radish_WebP_Engine {
                     update_post_meta($attachment_id, '_radish_initial_size', $initial_size);
                 }
 
-                // 阶段一：原图瘦身
-                if (!empty($this->settings['optimize_original'])) {
+                // 原图瘦身优化
+                if (!empty($settings['optimize_original'])) {
                     $this->optimize_original_file($original_path, $orig_quality, $max_dimension, $backup);
                     update_post_meta($attachment_id, '_radish_optimized_orig_size', filesize($original_path));
                 }
 
-                // 阶段二：生成 WebP
+                // 生成主图 WebP
                 $this->convert_file_to_webp($original_path, $quality);
             }
         }
 
         // 缩略图处理
         if (!empty($metadata['sizes']) && is_array($metadata['sizes'])) {
-            $base_dir = dirname($original_path);
             foreach ($metadata['sizes'] as $size_info) {
                 if (!empty($size_info['file'])) {
                     $thumb_path = path_join($base_dir, $size_info['file']);
                     if (file_exists($thumb_path)) {
-                        if (!empty($this->settings['optimize_original'])) {
+                        if (!empty($settings['optimize_original'])) {
                             $this->optimize_original_file($thumb_path, $orig_quality, 0, false);
                         }
                         $this->convert_file_to_webp($thumb_path, $quality);
@@ -110,7 +170,7 @@ class Radish_WebP_Engine {
     }
 
     /**
-     * 原图瘦身优化
+     * 原图瘦身优化（支持 256 色智能色彩量化）
      */
     public function optimize_original_file($file_path, $quality = 82, $max_dimension = 2560, $backup = false) {
         if (!file_exists($file_path) || !is_writable($file_path)) {
@@ -128,7 +188,6 @@ class Radish_WebP_Engine {
             try {
                 $image = new Imagick($file_path);
 
-                // 纠正 EXIF 旋转
                 $orientation = $image->getImageOrientation();
                 switch ($orientation) {
                     case Imagick::ORIENTATION_BOTTOMRIGHT:
@@ -143,7 +202,6 @@ class Radish_WebP_Engine {
                 }
                 $image->setImageOrientation(Imagick::ORIENTATION_TOPLEFT);
 
-                // 尺寸限制
                 if ($max_dimension > 0) {
                     $w = $image->getImageWidth();
                     $h = $image->getImageHeight();
@@ -154,23 +212,19 @@ class Radish_WebP_Engine {
 
                 $format = strtoupper($image->getImageFormat());
                 if ($format === 'JPEG' || $format === 'JPG') {
-                    // JPEG 深度优化：4:2:0 色度抽样 + 渐进式
                     $image->setImageCompression(Imagick::COMPRESSION_JPEG);
                     $image->setImageCompressionQuality($quality);
                     $image->setSamplingFactors(array('2x2', '1x1', '1x1'));
                     $image->setInterlaceScheme(Imagick::INTERLACE_PLANE);
                 } elseif ($format === 'PNG') {
-                    // PNG 深度优化（TinyPNG 同款原理）：256 智能色彩量化 + 抖动 + 保留透明通道
                     if ($image->getImageAlphaChannel()) {
                         $image->setImageAlphaChannel(Imagick::ALPHACHANNEL_ACTIVATE);
                     }
-                    // 智能色彩量化为 256 索引色，带误差扩散抖动
                     $image->quantizeImage(256, Imagick::COLORSPACE_SRGB, 0, true, false);
                     $image->setImageFormat('PNG8');
                     $image->setImageCompressionQuality(95);
                 }
 
-                // 彻底剥离元数据
                 $image->stripImage();
                 $image->writeImage($file_path);
                 $image->clear();
@@ -219,7 +273,6 @@ class Radish_WebP_Engine {
                         imagedestroy($src);
                         $src = $dst;
                     }
-                    // GD 智能色彩量化为 256 色
                     imagetruecolortopalette($src, true, 256);
                     imagepng($src, $file_path, 9);
                     imagedestroy($src);
@@ -264,9 +317,9 @@ class Radish_WebP_Engine {
             return false;
         }
 
-        $settings = get_option('radish_webp_settings', array());
+        $settings = $this->get_settings();
         $quality = isset($settings['quality']) ? intval($settings['quality']) : 80;
-        $orig_quality = isset($settings['orig_quality']) ? intval($settings['orig_quality']) : 85;
+        $orig_quality = isset($settings['orig_quality']) ? intval($settings['orig_quality']) : 82;
         $max_dimension = isset($settings['max_dimension']) ? intval($settings['max_dimension']) : 2560;
         $backup = !empty($settings['backup_original']);
 
